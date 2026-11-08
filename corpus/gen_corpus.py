@@ -1,6 +1,6 @@
 """Village world corpus generator.
 Every sentence is derived from WORLD LAWS below, so every sentence is true in the world.
-Lowercase, words and '.' separated by spaces. '?' used only in the Q&A set.
+Lowercase, words and punctuation separated by spaces. '?' appears in pre-training question lines and in the fine-tuning set.
 """
 import random, itertools, json
 random.seed(7)
