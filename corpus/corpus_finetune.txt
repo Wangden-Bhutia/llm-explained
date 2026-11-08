@@ -1,0 +1,32 @@
+what does the dog do when it rains ? it plays in the rain .
+what does the cat do when it rains ? it hides in the house .
+what does the cow do when it rains ? it sleeps in the field .
+what does the goat do when it rains ? it hides in the house .
+what does the bird do when it rains ? it hides in the tree .
+what does the dog do when it snows ? it runs on the hill .
+what does the cat do when it snows ? it sleeps in the house .
+what does the cow do when it snows ? it sleeps in the house .
+what does the goat do when it snows ? it sleeps in the house .
+what does the bird do when it snows ? it hides in the tree .
+what does the dog do when it is sunny ? it runs in the field .
+what does the cat do when it is sunny ? it sleeps in the sun .
+what does the cow do when it is sunny ? it eats in the field .
+what does the goat do when it is sunny ? it walks on the hill .
+what does the bird do when it is sunny ? it sings in the tree .
+what does the dog do when it is windy ? it runs on the hill .
+what does the cat do when it is windy ? it hides in the house .
+what does the cow do when it is windy ? it eats in the field .
+what does the goat do when it is windy ? it walks on the hill .
+what does the bird do when it is windy ? it hides in the tree .
+what does pema do ? she walks to the market .
+what does tashi do ? he plays with the dog .
+what does mina do ? she sings in the field .
+what does dawa do ? he walks to the river .
+who feeds the cow ? pema .
+who feeds the goat ? dawa .
+who feeds the cat ? mina .
+who feeds the dog ? tashi .
+what is the weather in winter ? it is snowy .
+what is the weather in spring ? it is rainy .
+what is the weather in summer ? it is sunny .
+what is the weather in autumn ? it is windy .

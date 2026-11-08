@@ -1,0 +1,9 @@
+Capacity test, 9 Nov 2026 (capacity_test_jax.py)
+2 pre-norm transformer blocks, 2 heads, GELU MLP, context 32, BPE vocab 73 in use, 3000 AdamW steps, 2 seeds averaged.
+Law accuracy = top next-token pick is a valid action, over 40 probes ("when it rains the cat ___", "in winter the goat ___").
+
+d   params  train_loss  held_loss  law_accuracy
+4    1249     1.71        2.87        24%
+8    3193     0.38        2.59        86%
+16   9385     0.36        1.60        86%
+32  30985     0.36        1.51        81%
