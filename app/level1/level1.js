@@ -1,8 +1,8 @@
 // Level 1, steps 1–4, after the course opening: raw text, letter tiles, counting by hand,
 // the pair board, five merges. Every number shown is computed live by the engine.
 // Every step's text says what just happened, why it matters, and ends with a "Your turn" line.
-import { createState, countPairs, rankPairs, step, totalTokens, encodeWord, encodeText, tokenizerFrom, END } from "../engine/bpe.js?v=8";
-import { loadGpt2, gpt2Tokens } from "../engine/gpt2.js?v=8";
+import { createState, countPairs, rankPairs, step, totalTokens, encodeWord, encodeText, tokenizerFrom, END } from "../engine/bpe.js?v=9";
+import { loadGpt2, gpt2Tokens } from "../engine/gpt2.js?v=9";
 
 const HAND_MERGES = 5;
 const TOTAL_MERGES = 55;
@@ -139,7 +139,13 @@ function introBuild() {
   phase = "intro";
   introPage(`<h2>What you'll build</h2>
     <p>Chatbots like ChatGPT and Claude run on a <strong>language model</strong>: a program that has learned, from a huge amount of text, to predict which bit of text comes next.</p>
-    <p>In this course you build one yourself, one part at a time. Yours won't chat like they do. It will be far too small for that. But inside, it works the same way, and you'll see every step.</p>`,
+    <p>In this course you build one yourself, one part at a time. Yours won't chat like they do. It will be far too small for that. But inside, it works the same way, and you'll see every step.</p>
+    <figure class="course-map">
+      <ol>
+        <li>Text</li><li class="here" aria-current="step">Tokens<span>you start here</span></li><li>Numbers</li><li>Network</li><li>Next word</li>
+      </ol>
+      <figcaption>Inside every language model, text is cut into tokens, tokens become numbers, a network works on the numbers, and out comes a prediction of the next word. You build each part in that order, starting with tokens.</figcaption>
+    </figure>`,
     [{ id: "next-intro", text: "Next", on: introVillage }]);
 }
 
@@ -540,6 +546,7 @@ function finish() {
   const list = state.merges.map((m, i) => `<li><span class="mk">${i + 1}</span>${code(m.a)} + ${code(m.b)}</li>`).join("");
   say(`<p>That's ${TOTAL_MERGES} merges. The village has gone from ${fmt(createStateTotal())} tiles to ${fmt(totalTokens(state))} tokens, and the vocabulary has ${state.alphabet.length + state.merges.length} pieces: the ${state.alphabet.length} you started with and ${state.merges.length} new ones.</p>
     <p>Why stop at ${TOTAL_MERGES}? It's a choice. More merges make the text shorter but the vocabulary bigger. The people who build real models make the same choice: GPT-2's vocabulary has 50,257 tokens, and Llama 3's has about 128,000.</p>
+    ${tradeoffChart()}
     <p>Look along the vocabulary strip: ${unused.length} pieces are faded. They were stepping stones, like ${code("bir")} on the way to ${code("bird_")}. They're still in the vocabulary, but nothing in the village uses them any more.</p>
     <p>Now the most important idea in this level. Your <strong>tokenizer</strong> isn't the ${state.alphabet.length + state.merges.length} pieces. It's the list of ${TOTAL_MERGES} merges, in the order you made them. To cut up any text, it replays those merges in exactly that order. The pieces are just its vocabulary.</p>
     <details class="merge-list"><summary>See all ${TOTAL_MERGES} merges, in order</summary><ol>${list}</ol></details>
@@ -548,6 +555,47 @@ function finish() {
 }
 
 function createStateTotal() { return totalTokens(createState(text)); }
+
+// ---------- step 6: the trade-off chart ----------
+// Tokens and vocabulary after every merge, 0 to 200, computed live by replaying the run.
+// Two stacked panels on their own scales (no shared, dual axis); both start at zero.
+const CHART_MERGES = 200;
+
+function tradeoffChart() {
+  const s2 = createState(text);
+  const tokens = [totalTokens(s2)];
+  while (tokens.length <= CHART_MERGES && step(s2)) tokens.push(totalTokens(s2));
+  const last = tokens.length - 1, base = s2.alphabet.length;
+  const vocab = tokens.map((_, k) => base + k);
+  const W = 340, L = 46, R = 12;
+  const x = (k) => L + (k / last) * (W - L - R);
+  const panel = (vals, max, top, h) => (k) => top + h - (vals[k] / max) * h;
+  const yT = panel(tokens, 7000, 38, 84), yV = panel(vocab, 240, 170, 60);
+  const pts = (y, from, to) => Array.from({ length: to - from + 1 }, (_, i) => `${x(from + i).toFixed(1)},${y(from + i).toFixed(1)}`).join(" ");
+  const S = TOTAL_MERGES;
+  const savedEarly = tokens[0] - tokens[S], savedLate = tokens[S] - tokens[last];
+  const num = (k, y, v, anchor, dy, dx = 0) => `<text x="${(x(k) + dx).toFixed(1)}" y="${(y(k) + dy).toFixed(1)}" text-anchor="${anchor}" class="v">${fmt(v)}</text>`;
+  const svg = `<svg viewBox="0 0 ${W} 270" role="img" aria-label="Tokens fall from ${fmt(tokens[0])} to ${fmt(tokens[S])} over the first ${S} merges, then only to ${fmt(tokens[last])} by merge ${last}, while the vocabulary grows from ${base} to ${vocab[S]} and on to ${vocab[last]}.">
+    <text x="${L}" y="12" class="t">Tokens in the village</text>
+    <line x1="${L}" y1="122" x2="${W - R}" y2="122" class="base"/>
+    <polyline points="${pts(yT, S, last)}" class="later"/>
+    <polyline points="${pts(yT, 0, S)}" class="now"/>
+    ${num(0, yT, tokens[0], "start", -6, 6)}${num(S, yT, tokens[S], "start", -8, 6)}${num(last, yT, tokens[last], "end", -8)}
+    <text x="${L}" y="150" class="t">Pieces in the vocabulary</text>
+    <line x1="${L}" y1="230" x2="${W - R}" y2="230" class="base"/>
+    <polyline points="${pts(yV, S, last)}" class="later"/>
+    <polyline points="${pts(yV, 0, S)}" class="now"/>
+    ${num(0, yV, vocab[0], "start", -6)}${num(S, yV, vocab[S], "end", -8, -6)}${num(last, yV, vocab[last], "end", -6)}
+    <line x1="${x(S)}" y1="30" x2="${x(S)}" y2="122" class="stop"/><line x1="${x(S)}" y1="162" x2="${x(S)}" y2="230" class="stop"/>
+    <text x="${L}" y="246" text-anchor="middle" class="ax">0</text>
+    <text x="${x(S)}" y="246" text-anchor="middle" class="ax">${S}</text>
+    <text x="${x(last)}" y="246" text-anchor="end" class="ax">${last}</text>
+    <text x="${x(S)}" y="262" text-anchor="middle" class="ax">you stopped here</text>
+    <text x="${x(last)}" y="262" text-anchor="end" class="ax">merges</text>
+  </svg>`;
+  return `<figure class="chart">${svg}
+    <figcaption>Solid: the ${S} merges you ran. Dashed: what ${last - S} more would do. The first ${S} merges cut ${fmt(savedEarly)} tokens; the next ${last - S} would cut only ${fmt(savedLate)}, because the most common pairs are merged first. The vocabulary grows by one piece with every merge.</figcaption></figure>`;
+}
 
 // ---------- step 7: test it, then the final check ----------
 let gpt2 = null;
@@ -558,13 +606,19 @@ async function startTest() {
   phase = "test";
   if (!gpt2) {
     say(`<p>Loading GPT-2's tokenizer…</p>`);
-    gpt2 = loadGpt2(await (await fetch("../engine/data/gpt2_r50k_base.tiktoken?v=8")).text());
+    gpt2 = loadGpt2(await (await fetch("../engine/data/gpt2_r50k_base.tiktoken?v=9")).text());
   }
   say(`<p>Your tokenizer is ready. Try it on any text: type below, or tap an example. The same text also goes through GPT-2's real tokenizer, from 2019, which has 50,257 pieces.</p>
     <label class="try-label" for="try">Text to cut up</label>
     <input id="try" class="try" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" value="${EXAMPLES[0]}">
     <div class="chips">${EXAMPLES.map((e, i) => `<button class="chip" data-i="${i}">${esc(e)}</button>`).join("")}</div>
-    <div id="results" aria-live="polite"></div>` +
+    <div id="results" aria-live="polite"></div>
+    <figure class="scale">
+      <figcaption>How many pieces each tokenizer has, drawn to scale</figcaption>
+      ${[["Yours", 80, "80"], ["GPT-2", 50257, "50,257"], ["Llama 3", 128000, "about 128,000"]].map(([who, n, lab]) =>
+        `<div class="srow"><span class="who">${who}</span><span class="track"><span class="fill${n < 1000 ? " tiny" : ""}" style="width:${(100 * n / 128000).toFixed(4)}%"></span></span><span class="n">${lab}</span></div>`).join("")}
+      <p class="small">Your bar is drawn too, but at this scale it's less than a pixel wide. Sizes from the GPT-2 and Llama 3 papers.</p>
+    </figure>` +
     turn(`try ${word("elephant")}, then ${word("zebra")}. When you've seen enough, ${tap("Final check")}.`),
     [{ id: "check", text: "Final check", on: () => splitTask(0) }]);
   const input = $("try");
@@ -713,6 +767,6 @@ function terrace(caption = true) {
 
 // ---------- start ----------
 village.addEventListener("click", onTileTap);
-text = await (await fetch("../../corpus/corpus_train.txt?v=8")).text();
+text = await (await fetch("../../corpus/corpus_train.txt?v=9")).text();
 lines = text.split("\n").filter((l) => l.trim()).map((l) => l.trim().split(/\s+/));
 restart();

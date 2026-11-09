@@ -172,6 +172,62 @@ body {
 .learned { margin: 0 0 12px; padding-left: 1.2em; }
 .learned li { margin-bottom: 6px; }
 
+/* Charts and diagrams: plain marks, labelled directly, slate and indigo only */
+.chart, .course-map, .scale { margin: 6px 0 14px; }
+.chart svg { width: 100%; height: auto; display: block; }
+.chart .t { font-family: var(--sans); font-size: 12px; font-weight: 700; fill: var(--slate); }
+.chart .v { font-family: var(--mono); font-size: 11px; fill: var(--slate); }
+.chart .ax { font-family: var(--mono); font-size: 10px; fill: var(--muted); }
+.chart .base { stroke: var(--edge); stroke-width: 1; }
+.chart .now { fill: none; stroke: var(--token); stroke-width: 2.5; stroke-linejoin: round; }
+.chart .later { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.chart .stop { stroke: var(--slate); stroke-width: 1; stroke-dasharray: 2 3; }
+figcaption { font-size: 14px; color: var(--muted); line-height: 1.45; margin-top: 6px; }
+
+.course-map ol { list-style: none; margin: 8px 0 4px; padding: 0; display: flex; gap: 16px; align-items: flex-start; }
+.course-map li {
+  position: relative;
+  flex: 1;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+  padding: 8px 2px;
+  border: 1px solid var(--edge);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--slate);
+}
+.course-map li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: -13px;
+  top: 50%;
+  width: 10px;
+  height: 2px;
+  background: var(--edge);
+}
+.course-map li.here { background: var(--slate); color: #fff; border-color: var(--slate); }
+.course-map li.here span {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 6px);
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--slate);
+}
+.course-map figcaption { margin-top: 26px; }
+
+.scale figcaption { margin: 0 0 8px; color: var(--slate); font-weight: 700; }
+.srow { display: grid; grid-template-columns: 4.2em minmax(0, 1fr) 7.6em; align-items: center; gap: 8px; margin: 4px 0; }
+.srow .who { font-size: 14px; }
+.srow .n { font-family: var(--mono); font-size: 12px; text-align: right; color: var(--slate); }
+.srow .track { height: 12px; background: rgba(29, 42, 48, 0.06); border-radius: 2px; position: relative; overflow: hidden; }
+.srow .fill { display: block; height: 100%; background: var(--slate); }
+.srow .fill.tiny { background: var(--token); }
+
 /* "Your turn" line: the one thing to do next, every step */
 .turn { color: var(--slate); }
 .turn strong { font-weight: 700; }
