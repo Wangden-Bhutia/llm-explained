@@ -26,7 +26,9 @@ function label(sym) {
   return esc(sym);
 }
 const pairLabel = (a, b) => `${label(a)} + ${label(b)}`;
-const code = (s) => `<code>${label(s)}</code>`;
+// A piece (letter or token) is always shown as a small tile; a village word always in bold quotes.
+const code = (s) => `<span class="t inline${s.length > 1 ? " merged" : ""}">${label(s)}</span>`;
+const word = (w) => `<strong class="w">\u201c${esc(w)}\u201d</strong>`;
 const turn = (html) => `<p class="turn"><strong>Your turn:</strong> ${html}</p>`;
 const tap = (name) => `tap <em>${name}</em>`;
 
@@ -218,10 +220,10 @@ function checkCount() {
     if (n && w !== "the") insideOther.push(w);
   });
   markPair("h", "e", "found", new Set(COUNT_LINES));
-  const other = [...new Set(insideOther)].map((w) => `<code>${w}</code>`).join(", ");
+  const other = [...new Set(insideOther)].map((w) => word(w)).join(", ");
   const verdict = found.size === truth
-    ? `<p>Right: ${truth}. Notice that not all of them are in <code>the</code>. There's one inside ${other} too.</p>`
-    : `<p>There are ${truth}. You found ${found.size}. The one people miss is inside ${other}, not just <code>the</code>.</p>`;
+    ? `<p>Right: ${truth}. Notice that not all of them are in ${word("the")}. There's one inside ${other} too.</p>`
+    : `<p>There are ${truth}. You found ${found.size}. The one people miss is inside ${other}, not just ${word("the")}.</p>`;
   say(verdict + `<p>Pairs are only counted inside a word, never across a space.</p>
        <p>Why count pairs at all? A pair that turns up again and again is worth making into a single piece. The next step counts every pair in all ${lines.length} lines, the same way you just did.</p>
        ${turn(tap(`Count all ${lines.length} lines`))}`,
@@ -294,7 +296,7 @@ function reveal() {
   const explain = `<p>To <strong>merge</strong> a pair is to join its two tiles into one new piece, everywhere the pair appears, in every line at once. Only the most common pair is merged each time.</p>
     ${turn(`${tap(`Merge ${pairLabel(b.a, b.b)}`)} and watch the village.`)}`;
   renderBoard(verdict + explain, true);
-  $("board-actions").innerHTML = `<button id="merge">Merge <code>${pairLabel(b.a, b.b)}</code></button>`;
+  $("board-actions").innerHTML = `<button id="merge">Merge ${pairLabel(b.a, b.b)}</button>`;
   $("merge").addEventListener("click", merge);
 }
 
@@ -335,9 +337,9 @@ function afterMerge(m) {
   const total = fmt(totalTokens(state));
   const notes = {
     1: `<p>Every ${code("h")} + ${code("e")} in the village is now one piece, ${made}. A piece like this is called a <strong>token</strong>. Tokens are what a language model actually reads. Big models learn from huge numbers of them: Meta's Llama 3 was trained on 15.6 trillion tokens.</p>`,
-    2: `<p>${made} is an ${code("s")} that ends a word, as in <code>rains</code> and <code>is</code>. The small ${code(END)} is the <strong>end-of-word marker</strong>. It records where each word stops, so the text can always be put back together exactly.</p>`,
-    3: `<p>${made} now stands for ${code("i")} and ${code("n")} wherever they meet inside a word: <code>in</code>, <code>rains</code>, <code>winter</code>, <code>drinks</code>.</p>`,
-    4: `<p>${made} is <code>he</code> at the end of a word. Look at <code>the</code>: it's now ${code("t")} + ${made}.</p>`,
+    2: `<p>${made} is an ${code("s")} that ends a word, as in ${word("rains")} and ${word("is")}. The small ${code(END)} is the <strong>end-of-word marker</strong>. It records where each word stops, so the text can always be put back together exactly.</p>`,
+    3: `<p>${made} now stands for ${code("i")} and ${code("n")} wherever they meet inside a word: ${word("in")}, ${word("rains")}, ${word("winter")}, ${word("drinks")}.</p>`,
+    4: `<p>${made} is ${code("he")} at the end of a word. Look at ${word("the")}: it's now ${code("t")} + ${made}.</p>`,
     5: `<p>${made} is a whole word in a single token, the first common word to become one.</p>
         <p>What you've been doing has a name: <strong>byte pair encoding</strong>, or BPE. It's named after a 1994 file-compression trick that merged pairs of bytes. In 2015, Sennrich, Haddow and Birch used the same loop on letters. GPT-2 and Llama 3 use versions of it.</p>`,
   };

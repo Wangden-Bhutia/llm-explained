@@ -45,6 +45,18 @@ body {
 .intro p { font-size: 18px; line-height: 1.55; margin: 0 0 16px; }
 .intro .actions { margin-top: 24px; }
 
+/* In running text: a piece is a small tile, a village word is bold in quotes */
+.t.inline {
+  display: inline-block;
+  font-size: 0.88em;
+  padding: 3px 4px 2px;
+  min-width: 1.4em;
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  vertical-align: 1px;
+}
+.w { font-weight: 700; }
+
 /* "Your turn" line: the one thing to do next, every step */
 .turn { color: var(--slate); }
 .turn strong { font-weight: 700; }
