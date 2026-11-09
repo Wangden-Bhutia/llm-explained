@@ -1,7 +1,7 @@
 // Level 1, steps 1–4, after the course opening: raw text, letter tiles, counting by hand,
 // the pair board, five merges. Every number shown is computed live by the engine.
 // Every step's text says what just happened, why it matters, and ends with a "Your turn" line.
-import { createState, countPairs, rankPairs, step, totalTokens, END } from "../engine/bpe.js";
+import { createState, countPairs, rankPairs, step, totalTokens, END } from "../engine/bpe.js?v=4";
 
 const HAND_MERGES = 5;
 const COUNT_LINES = [0, 1, 2]; // the three lines the player counts h + e in by hand
@@ -370,6 +370,6 @@ function restart() {
 
 // ---------- start ----------
 village.addEventListener("click", onTileTap);
-text = await (await fetch("../../corpus/corpus_train.txt")).text();
+text = await (await fetch("../../corpus/corpus_train.txt?v=4")).text();
 lines = text.split("\n").filter((l) => l.trim()).map((l) => l.trim().split(/\s+/));
 restart();
