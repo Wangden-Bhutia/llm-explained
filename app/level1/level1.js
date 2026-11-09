@@ -1,8 +1,8 @@
-// Level 1, steps 1–4, after the course opening: raw text, letter tiles, counting by hand,
-// the pair board, five merges. Every number shown is computed live by the engine.
-// Every step's text says what just happened, why it matters, and ends with a "Your turn" line.
-import { createState, countPairs, rankPairs, step, totalTokens, encodeWord, encodeText, tokenizerFrom, END } from "../engine/bpe.js?v=9";
-import { loadGpt2, gpt2Tokens } from "../engine/gpt2.js?v=9";
+// Level 1: tokens and BPE, from the course opening to the final check.
+// Every number shown is computed live by the engine. Progress is saved on the device and rebuilt on
+// return by replaying the merges, which the engine reproduces exactly.
+import { createState, countPairs, rankPairs, step, totalTokens, encodeWord, encodeTextMarked, tokenizerFrom, vocabulary, UNKNOWN, END } from "../engine/bpe.js?v=10";
+import { loadGpt2, gpt2Tokens } from "../engine/gpt2.js?v=10";
 
 const HAND_MERGES = 5;
 const TOTAL_MERGES = 55;
@@ -10,6 +10,7 @@ const TIE_STOPS = new Set([9, 31, 55]); // the run stops at these ties for the p
 const COUNT_LINES = [0, 1, 2]; // the three lines the player counts h + e in by hand
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const fmt = (n) => n.toLocaleString("en-US");
+const plural = (n, one, many = one + "s") => `${fmt(n)} ${n === 1 ? one : many}`;
 const wait = (ms) => new Promise((r) => setTimeout(r, reduced ? 0 : ms));
 
 const $ = (id) => document.getElementById(id);
@@ -45,14 +46,39 @@ function renderRaw() {
   village.innerHTML = lines.map((ws) => `<div class="line raw">${esc(ws.join(" "))}</div>`).join("");
 }
 
+// Screen-reader text for one line: the line itself, then its pieces (the end marker is left out).
+function lineSpeech(l) {
+  const ws = lines[l];
+  const pieces = ws.map((w) => wordMap.get(w).symbols.map((s) => s.replace(END, "")).filter(Boolean).join(" ")).join(", ");
+  const n = ws.reduce((a, w) => a + wordMap.get(w).symbols.length, 0);
+  const said = ws.join(" ").replace(/ ([.?])$/, "$1");
+  return `Line ${l + 1}: ${/[.?]$/.test(said) ? said : said + "."} ${plural(n, state.merges.length ? "token" : "tile")}: ${pieces}${/[.?]$/.test(pieces) ? "" : "."}`;
+}
+
+let wordEls = [], lineSr = [];
 function renderTiles() {
   village.innerHTML = lines.map((ws, l) => {
     const words = ws.map((w, wi) => {
       const syms = wordMap.get(w).symbols;
       return `<span class="word" aria-hidden="true">${syms.map((s, si) => tile(s, l, wi, si)).join("")}</span>`;
     }).join("");
-    return `<div class="line" data-l="${l}" aria-label="${esc(ws.join(" "))}">${words}</div>`;
+    return `<div class="line" data-l="${l}"><span class="sr">${esc(lineSpeech(l))}</span>${words}</div>`;
   }).join("");
+  wordEls = lines.map((_, l) => [...village.querySelectorAll(`.line[data-l="${l}"] > .word`)]);
+  lineSr = [...village.querySelectorAll(".line > .sr")];
+}
+
+// Redraw only the words a merge changed. Every other tile stays exactly as it was.
+function patchWords(changed) {
+  lines.forEach((ws, l) => {
+    let touched = false;
+    ws.forEach((w, wi) => {
+      if (!changed.has(w)) return;
+      wordEls[l][wi].innerHTML = wordMap.get(w).symbols.map((s, si) => tile(s, l, wi, si)).join("");
+      touched = true;
+    });
+    if (touched) lineSr[l].textContent = lineSpeech(l);
+  });
 }
 
 function setCounter(n, unit, animate) {
@@ -78,10 +104,18 @@ function actionsHTML(actions) {
 function bind(actions) { for (const a of actions) if (a.on) $(a.id).addEventListener("click", a.on); }
 
 const panel = task.closest(".panel");
-function say(html, actions = []) {
+// Keep keyboard and screen-reader users in place: if focus was on a control in the panel and the same
+// control exists after the redraw, return to it; otherwise, on a new step, move focus to the step's text.
+function settleFocus(prevId, wasInPanel, newStep) {
+  if (prevId && $(prevId)) { $(prevId).focus({ preventScroll: true }); return; }
+  if (newStep || wasInPanel) task.focus({ preventScroll: true });
+}
+function say(html, actions = [], { newStep = true } = {}) {
+  const a = document.activeElement, wasInPanel = task.contains(a), prevId = wasInPanel ? a.id : null;
   task.innerHTML = html + actionsHTML(actions);
   bind(actions);
-  panel.scrollTop = 0; // every step's text starts from its first line
+  if (newStep) panel.scrollTop = 0; // every step's text starts from its first line
+  settleFocus(prevId, wasInPanel, newStep);
 }
 
 // Non-overlapping occurrences of a + b inside one word, left to right (the engine's merge rule).
@@ -137,19 +171,21 @@ function introPage(html, actions) {
 
 function introBuild() {
   phase = "intro";
+  save("intro1");
   introPage(`<h2>What you'll build</h2>
     <p>Chatbots like ChatGPT and Claude run on a <strong>language model</strong>: a program that has learned, from a huge amount of text, to predict which bit of text comes next.</p>
     <p>In this course you build one yourself, one part at a time. Yours won't chat like they do. It will be far too small for that. But inside, it works the same way, and you'll see every step.</p>
     <figure class="course-map">
       <ol>
-        <li>Text</li><li class="here" aria-current="step">Tokens<span>you start here</span></li><li>Numbers</li><li>Network</li><li>Next word</li>
+        <li>Text</li><li class="here" aria-current="step">Tokens<span>you start here</span></li><li>Numbers</li><li>Network</li><li>Next token</li>
       </ol>
-      <figcaption>Inside every language model, text is cut into tokens, tokens become numbers, a network works on the numbers, and out comes a prediction of the next word. You build each part in that order, starting with tokens.</figcaption>
+      <figcaption>Inside every language model, text is cut into tokens, tokens become numbers, a network works on the numbers, and out comes a prediction of the next token. You build each part in that order, starting with tokens.</figcaption>
     </figure>`,
     [{ id: "next-intro", text: "Next", on: introVillage }]);
 }
 
 function introVillage() {
+  save("intro2");
   introPage(`<h2>Why a village</h2>
     <p>Real models learn from an enormous amount of text. Your model learns from billions of times less: one made-up hill village. Four people (Pema, Tashi, Mina and Dawa), five animals, four seasons, and the weather. ${lines.length} short lines in all.</p>
     <p>It's small on purpose. You can read the whole thing, so at every step you can check what your model did against what it was given. And the village has fixed rules (in winter it snows; when it rains, the cat hides), so later you can test whether your model learned them.</p>`,
@@ -160,6 +196,7 @@ function introVillage() {
 function showVillage() {
   introEl.hidden = true;
   phase = "raw";
+  save("raw");
   renderRaw();
   village.scrollTop = 0;
   setCounter(lines.length, "lines");
@@ -171,6 +208,7 @@ function showVillage() {
 
 function cutIntoLetters() {
   phase = "tiles";
+  save("tiles");
   renderTiles();
   village.scrollTop = 0;
   setCounter(totalTokens(state), "tiles", true);
@@ -191,14 +229,26 @@ function startCounting() {
     el.classList.toggle("focus", focus.has(+el.dataset.l));
     el.classList.toggle("dim", !focus.has(+el.dataset.l));
   });
-  updateCounting();
+  // In the bright lines, every tile becomes a button a keyboard or screen reader can reach.
+  village.querySelectorAll(".line.focus .word").forEach((w) => w.removeAttribute("aria-hidden"));
+  village.querySelectorAll(".line.focus .t").forEach((t) => {
+    const w = lines[+t.dataset.l][+t.dataset.w];
+    t.setAttribute("role", "button");
+    t.tabIndex = 0;
+    t.setAttribute("aria-pressed", "false");
+    t.setAttribute("aria-label", `${t.textContent === END ? "end marker" : t.textContent}, in ${w}`);
+  });
+  updateCounting(true);
 }
 
-function updateCounting() {
+function updateCounting(newStep = false) {
+  save("counting");
   say(`<p>Start with a small sample: the three bright lines at the top.</p>
        ${turn(`find every place where an ${code("h")} tile is followed straight away by an ${code("e")} tile, inside the same word. Tap either tile to mark the pair, and tap again to unmark it. When you think you've found them all, ${tap("I've found them all")}.`)}
-       <p class="small">Found so far: ${found.size}</p>`,
-    [{ id: "done", text: "I've found them all", on: checkCount }]);
+       <p class="small">Found so far: ${found.size}</p>
+       <button class="skip" id="to-tiles">Go to the tiles</button>`,
+    [{ id: "done", text: "I've found them all", on: checkCount }], { newStep });
+  $("to-tiles").addEventListener("click", () => village.querySelector(".line.focus .t[role=button]").focus());
 }
 
 function onTileTap(e) {
@@ -209,16 +259,24 @@ function onTileTap(e) {
   let p = -1;
   if (syms[s] === "h" && syms[s + 1] === "e") p = s;
   else if (syms[s] === "e" && syms[s - 1] === "h") p = s - 1;
-  if (p < 0) { t.classList.remove("nope"); void t.offsetWidth; t.classList.add("nope"); return; }
+  if (p < 0) {
+    t.classList.remove("nope"); void t.offsetWidth; t.classList.add("nope");
+    $("sr-status").textContent = `Not a pair: that ${t.textContent === END ? "end marker" : t.textContent} is not part of an h followed by an e.`;
+    return;
+  }
+  $("sr-status").textContent = "";
   const key = `${l}:${w}:${p}`;
   const ts = tilesOf(l, w);
-  if (found.has(key)) { found.delete(key); ts[p].classList.remove("found"); ts[p + 1].classList.remove("found"); }
-  else { found.add(key); ts[p].classList.add("found"); ts[p + 1].classList.add("found"); }
+  const on = !found.has(key);
+  if (on) found.add(key); else found.delete(key);
+  for (const t2 of [ts[p], ts[p + 1]]) { t2.classList.toggle("found", on); t2.setAttribute("aria-pressed", String(on)); }
   updateCounting();
 }
 
 function checkCount() {
   phase = "counted";
+  village.querySelectorAll(".line.focus .t").forEach((t) => { t.removeAttribute("role"); t.removeAttribute("tabindex"); t.removeAttribute("aria-pressed"); t.removeAttribute("aria-label"); });
+  village.querySelectorAll(".line.focus .word").forEach((w) => w.setAttribute("aria-hidden", "true"));
   let truth = 0;
   const insideOther = [];
   for (const l of COUNT_LINES) lines[l].forEach((w) => {
@@ -249,6 +307,7 @@ function shuffle(arr, seed) {
 
 function openBoard(first) {
   phase = "board";
+  save("board");
   village.classList.remove("counting");
   village.querySelectorAll(".line").forEach((el) => el.classList.remove("focus", "dim"));
   village.querySelectorAll(".t.found").forEach((t) => t.classList.remove("found"));
@@ -273,8 +332,10 @@ function renderBoard(intro, revealed = false) {
     return `<button class="pair${best ? " best" : ""}" data-i="${i}" aria-pressed="${pressed}" ${revealed ? "disabled" : ""}>
       <span class="pieces">${pairLabel(p.a, p.b)}</span>${n}${bar}</button>`;
   }).join("");
+  const a0 = document.activeElement, inPanel = task.contains(a0);
   task.innerHTML = intro + `<div class="board${revealed ? " revealed" : ""}">${cells}</div>` + `<div class="actions" id="board-actions"></div>`;
   if (revealed) panel.scrollTop = 0;
+  if (revealed || !inPanel) task.focus({ preventScroll: true });
   task.querySelectorAll(".pair").forEach((btn) => btn.addEventListener("click", () => pick(+btn.dataset.i)));
   if (!revealed) {
     $("board-actions").innerHTML = `<button id="reveal" ${board.picked === null ? "disabled" : ""}>Reveal the counts</button>`;
@@ -331,11 +392,11 @@ async function animateMerge(a, b, animate) {
     });
     await wait(520);
   }
-  const scroll = village.scrollTop;
+  const before = new Map(state.words.map((e) => [e.word, e.symbols.length]));
   const m = step(state);
   if (m.a !== a || m.b !== b) console.error("engine merged a different pair", m, a, b);
-  renderTiles();
-  village.scrollTop = scroll;
+  // a merge shortens exactly the words it touched
+  patchWords(new Set(state.words.filter((e) => e.symbols.length !== before.get(e.word)).map((e) => e.word)));
   const made = m.a + m.b;
   for (const l of vis) village.querySelectorAll(`.t[data-l="${l}"]`).forEach((t) => {
     const syms = wordMap.get(lines[l][+t.dataset.w]).symbols;
@@ -348,10 +409,11 @@ async function animateMerge(a, b, animate) {
 
 function afterMerge(m) {
   const k = state.merges.length;
+  save("afterMerge");
   const made = code(m.a + m.b);
   const total = fmt(totalTokens(state));
   const notes = {
-    1: `<p>Every ${code("h")} + ${code("e")} in the village is now one piece, ${made}. A piece like this is called a <strong>token</strong>. Tokens are what a language model actually reads. Big models learn from huge numbers of them: Meta's Llama 3 was trained on 15.6 trillion tokens.</p>`,
+    1: `<p>Every ${code("h")} + ${code("e")} in the village is now one piece, ${made}. A piece like this is called a <strong>token</strong>. Tokens are what a language model actually reads. Big models learn from huge numbers of them: Meta's largest Llama 3 model was trained on 15.6 trillion tokens.</p>`,
     2: `<p>${made} is an ${code("s")} that ends a word, as in ${word("rains")} and ${word("is")}. The small ${code(END)} is the <strong>end-of-word marker</strong>. It records where each word stops, so the text can always be put back together exactly.</p>`,
     3: `<p>${made} now stands for ${code("i")} and ${code("n")} wherever they meet inside a word: ${word("in")}, ${word("rains")}, ${word("winter")}, ${word("drinks")}.</p>`,
     4: `<p>${made} is ${code("he")} at the end of a word. Look at ${word("the")}: it's now ${code("t")} + ${made}.</p>`,
@@ -374,6 +436,7 @@ function afterMerge(m) {
 }
 
 function restart() {
+  clearSave();
   run.token++;
   run.paused = false;
   state = createState(text);
@@ -433,15 +496,16 @@ function speedButton() {
 
 function renderRun() {
   const k = state.merges.length, m = run.last;
+  save("run");
   const lead = m
     ? `<p>Merge ${k} of ${TOTAL_MERGES}. Merged ${code(m.a)} + ${code(m.b)}, which appeared ${fmt(m.count)} times.</p>`
     : `<p>Merge ${k} of ${TOTAL_MERGES}.</p>`;
   if (run.paused) {
     say(`<p>Paused after merge ${k} of ${TOTAL_MERGES}. Scroll the village to look closely.</p>` + terrace(false),
-      [{ id: "go", text: "Carry on", on: () => { run.paused = false; phase = "running"; renderRun(); runLoop(); } }, speedButton()]);
+      [{ id: "go", text: "Carry on", on: () => { run.paused = false; phase = "running"; renderRun(); runLoop(); } }, speedButton()], { newStep: false });
   } else {
     say(lead + terrace(false) + turn(`watch the village shrink. ${Tap("Pause")} to stop and look at any moment.`),
-      [{ id: "pause", text: "Pause", on: () => { run.paused = true; run.token++; phase = "paused"; renderRun(); } }, speedButton()]);
+      [{ id: "pause", text: "Pause", on: () => { run.paused = true; run.token++; phase = "paused"; renderRun(); } }, speedButton()], { newStep: false });
   }
 }
 
@@ -473,8 +537,10 @@ function renderTie(revealed = false, verdict = "") {
     return `<button class="pair${best ? " best" : ""}" data-i="${i}" aria-pressed="${board.picked === i}" ${revealed ? "disabled" : ""}>
       <span class="pieces">${pairLabel(p.a, p.b)}</span><span class="n">${fmt(p.count)}</span></button>`;
   }).join("");
+  const a0 = document.activeElement, inPanel = task.contains(a0);
   task.innerHTML = (revealed ? verdict : board.intro) + `<div class="board${revealed ? " revealed" : ""}">${cells}</div><div class="actions" id="board-actions"></div>`;
   panel.scrollTop = 0;
+  if (revealed || !inPanel) task.focus({ preventScroll: true });
   if (!revealed) {
     task.querySelectorAll(".pair").forEach((btn) => btn.addEventListener("click", () => tieLook(+btn.dataset.i)));
     $("board-actions").innerHTML = `<button id="choose" ${board.picked === null ? "disabled" : ""}>Merge this one</button>`;
@@ -541,6 +607,7 @@ function unusedPieces() {
 
 function finish() {
   phase = "finished";
+  save("finished");
   const unused = unusedPieces();
   renderVocab(new Set(unused));
   const list = state.merges.map((m, i) => `<li><span class="mk">${i + 1}</span>${code(m.a)} + ${code(m.b)}</li>`).join("");
@@ -604,9 +671,10 @@ const SPACE = "␣"; // ␣, shows where GPT-2 keeps a space
 
 async function startTest() {
   phase = "test";
+  save("test");
   if (!gpt2) {
     say(`<p>Loading GPT-2's tokenizer…</p>`);
-    gpt2 = loadGpt2(await (await fetch("../engine/data/gpt2_r50k_base.tiktoken?v=9")).text());
+    gpt2 = loadGpt2(await (await fetch("../engine/data/gpt2_r50k_base.tiktoken?v=10")).text());
   }
   say(`<p>Your tokenizer is ready. Try it on any text: type below, or tap an example. The same text also goes through GPT-2's real tokenizer, from 2019, which has 50,257 pieces.</p>
     <label class="try-label" for="try">Text to cut up</label>
@@ -615,7 +683,7 @@ async function startTest() {
     <div id="results" aria-live="polite"></div>
     <figure class="scale">
       <figcaption>How many pieces each tokenizer has, drawn to scale</figcaption>
-      ${[["Yours", 80, "80"], ["GPT-2", 50257, "50,257"], ["Llama 3", 128000, "about 128,000"]].map(([who, n, lab]) =>
+      ${[["Yours", vocabulary(tokenizerFrom(state)).length, fmt(vocabulary(tokenizerFrom(state)).length)], ["GPT-2", 50257, "50,257"], ["Llama 3", 128000, "about 128,000"]].map(([who, n, lab]) =>
         `<div class="srow"><span class="who">${who}</span><span class="track"><span class="fill${n < 1000 ? " tiny" : ""}" style="width:${(100 * n / 128000).toFixed(4)}%"></span></span><span class="n">${lab}</span></div>`).join("")}
       <p class="small">Your bar is drawn too, but at this scale it's less than a pixel wide. Sizes from the GPT-2 and Llama 3 papers.</p>
     </figure>` +
@@ -630,24 +698,31 @@ async function startTest() {
 function showResults() {
   const textIn = $("try").value;
   const tok = tokenizerFrom(state);
-  const mine = encodeText(textIn, tok);
-  const mineTiles = mine.words.map((w) => w.tokens
-    ? `<span class="word">${w.tokens.map((t) => code(t)).join("")}</span>`
-    : `<span class="word cant">${esc(w.word)}</span>`).join(" ");
-  const mineCount = mine.words.reduce((n, w) => n + (w.tokens ? w.tokens.length : 0), 0);
+  const mine = encodeTextMarked(textIn, tok);
+  const mineTiles = mine.words.map((w) => `<span class="word">${w.tokens.map((t) =>
+    t.startsWith(UNKNOWN) ? unknownTile(t.slice(UNKNOWN.length)) : code(t)).join("")}</span>`).join(" ");
+  const mineCount = mine.words.reduce((n, w) => n + w.tokens.length, 0);
+  const unknownCount = mine.words.reduce((n, w) => n + w.tokens.filter((t) => t.startsWith(UNKNOWN)).length, 0);
   const theirs = gpt2Tokens(textIn, gpt2);
   const gptTiles = theirs.map((t) => t.text === null
     ? `<span class="t inline gpt bytes" title="bytes ${t.hex}">${t.hex}</span>`
     : `<span class="t inline gpt">${esc(t.text).replace(/ /g, `<span class="sp">${SPACE}</span>`)}</span>`).join("");
   const notes = [];
   if (textIn !== textIn.toLowerCase()) notes.push(`Your tokenizer only knows lowercase, so capitals are lowered first. GPT-2 keeps them.`);
-  if (mine.unknown.length) notes.push(`Your tokenizer can't read ${mine.unknown.map((c) => code(c)).join(" ")}: the village never uses ${mine.unknown.length > 1 ? "them" : "it"}, so it has no piece for ${mine.unknown.length > 1 ? "them" : "it"}. GPT-2 starts from the 256 possible bytes, so it can encode any text at all.`);
+  if (mine.unknown.length) notes.push(`Your tokenizer has no piece for ${mine.unknown.map((c) => unknownTile(c)).join(" ")}, because the village never uses ${mine.unknown.length > 1 ? "them" : "it"}. It marks ${mine.unknown.length > 1 ? "each one" : "it"} as unknown and still cuts up the rest of the word. Its merges can't reach across an unknown piece, so a word can split differently next to one. GPT-2 starts from the 256 possible bytes, so it can encode any text at all.`);
   if (theirs.some((t) => t.text === null)) notes.push(`The dashed tiles are pieces of a character. An emoji or a Nepali letter takes several bytes, and GPT-2 sometimes splits them across tokens.`);
   if (theirs.some((t) => t.text && t.text.startsWith(" "))) notes.push(`${code(SPACE)} marks a space. GPT-2 keeps the space on the front of the next word, where your tokenizer uses ${code(END)} at the end.`);
   $("results").innerHTML = `
-    <div class="result"><p class="who">Your tokenizer <span>80 pieces</span></p><div class="row">${mineTiles || "&nbsp;"}</div><p class="small">${mineCount} tokens${mine.unknown.length ? `, and ${mine.words.filter((w) => !w.tokens).length} ${mine.words.filter((w) => !w.tokens).length === 1 ? "word" : "words"} it can't read` : ""}</p></div>
-    <div class="result"><p class="who">GPT-2 <span>50,257 pieces</span></p><div class="row">${gptTiles || "&nbsp;"}</div><p class="small">${theirs.length} tokens</p></div>
+    <div class="result"><p class="who">Your tokenizer <span>${fmt(vocabulary(tok).length)} pieces</span></p><div class="row">${mineTiles || "&nbsp;"}</div><p class="small">${plural(mineCount, "token")}${unknownCount ? `, ${unknownCount} of them unknown` : ""}</p></div>
+    <div class="result"><p class="who">GPT-2 <span>50,257 pieces</span></p><div class="row">${gptTiles || "&nbsp;"}</div><p class="small">${plural(theirs.length, "token")}</p></div>
     ${notes.map((n) => `<p class="small">${n}</p>`).join("")}`;
+}
+
+// A character the tokenizer has no piece for. Invisible characters are shown by their code point.
+function unknownTile(ch) {
+  const visible = /[\p{L}\p{N}\p{P}\p{S}]/u.test(ch);
+  const shown = visible ? esc(ch) : `U+${ch.codePointAt(0).toString(16).toUpperCase().padStart(4, "0")}`;
+  return `<span class="t inline unknown" title="unknown character">${shown}</span>`;
 }
 
 const SPLITS = [
@@ -662,6 +737,7 @@ let split = null;
 
 function splitTask(n) {
   phase = "check";
+  save("check", { n });
   const sp = SPLITS[n];
   const syms = [...sp.word, END];
   split = { n, syms, joined: syms.slice(1).map(() => false), checked: false };
@@ -674,7 +750,7 @@ function groups() {
   return out.map((g) => g.join(""));
 }
 
-function renderSplit(verdict = "") {
+function renderSplit(verdict = "", keepSeam = null) {
   const sp = SPLITS[split.n];
   let html = "", i = 0;
   for (const g of groups()) {
@@ -682,10 +758,10 @@ function renderSplit(verdict = "") {
     html += `<span class="grp${merged}">`;
     [...g].forEach((c, j) => {
       html += `<span class="t">${label(c)}</span>`;
-      if (j < g.length - 1) { html += `<button class="seam on" data-i="${i}" aria-label="Separate" ${split.checked ? "disabled" : ""}></button>`; i++; }
+      if (j < g.length - 1) { html += `<button class="seam on" data-i="${i}" aria-label="Separate ${label(c).replace(/<[^>]+>/g, "")} from the next tile" ${split.checked ? "disabled" : ""}></button>`; i++; }
     });
     html += `</span>`;
-    if (i < split.joined.length) { html += `<button class="seam" data-i="${i}" aria-label="Join" ${split.checked ? "disabled" : ""}></button>`; i++; }
+    if (i < split.joined.length) { html += `<button class="seam" data-i="${i}" aria-label="Join ${g.replace(END, "end")} with the next tile" ${split.checked ? "disabled" : ""}></button>`; i++; }
   }
   const mergesList = sp.merges.map(([k, a, b]) => `<li><span class="mk">${k}</span>${code(a)} + ${code(b)}</li>`).join("");
   const head = split.n === 0
@@ -694,9 +770,10 @@ function renderSplit(verdict = "") {
   task.innerHTML = (verdict || head + `<p>Here is ${word(sp.word)} as letter tiles. These are the only merges in your list that could join two of its neighbouring tiles, in the order you made them:</p>
     <ol class="merge-list-small">${mergesList}</ol>` +
     turn(`tap the gap between two tiles to join them, and tap it again to separate them. When it looks right, ${tap("Check")}.`)) +
-    `<div class="splitter" role="group" aria-label="Letter tiles of ${sp.word}">${html}</div><div class="actions" id="split-actions"></div>`;
-  panel.scrollTop = 0;
-  task.querySelectorAll(".seam").forEach((b) => b.addEventListener("click", () => { split.joined[+b.dataset.i] = !split.joined[+b.dataset.i]; renderSplit(); }));
+    `<div class="splitter" role="group" aria-label="Letter tiles of ${sp.word}: ${groups().map((g) => g.replace(END, " end")).join(", ")}">${html}</div><div class="actions" id="split-actions"></div>`;
+  if (keepSeam === null) { panel.scrollTop = 0; task.focus({ preventScroll: true }); }
+  else task.querySelector(`.seam[data-i="${keepSeam}"]`)?.focus({ preventScroll: true });
+  task.querySelectorAll(".seam").forEach((b) => b.addEventListener("click", () => { const i = +b.dataset.i; split.joined[i] = !split.joined[i]; renderSplit("", i); }));
   const acts = $("split-actions");
   if (!split.checked) {
     acts.innerHTML = `<button id="check-split">Check</button>`;
@@ -728,6 +805,7 @@ function checkSplit() {
 
 function levelDone() {
   phase = "level-done";
+  save("done");
   say(`<p><strong>Level 1 complete.</strong> You can now explain:</p>
     <ul class="learned">
       <li>A language model reads <strong>tokens</strong>: sometimes whole words, often pieces of them.</li>
@@ -765,8 +843,75 @@ function terrace(caption = true) {
     ${html}</div>`;
 }
 
+// ---------- saving and resuming ----------
+// Only where the player is and how many merges they have made is stored; on return the merges are
+// replayed, which rebuilds the village, the vocabulary and the run exactly.
+const SAVE_KEY = "llm-explained:level1", SAVE_VERSION = 1;
+function save(cp, extra = {}) {
+  try {
+    localStorage.setItem(SAVE_KEY, JSON.stringify({ v: SAVE_VERSION, lines: lines.length, cp, k: state.merges.length, fast: run.fast, ...extra }));
+  } catch { /* storage unavailable: the game still works, it just won't resume */ }
+}
+function clearSave() { try { localStorage.removeItem(SAVE_KEY); } catch { /* ignore */ } }
+function loadSave() {
+  try {
+    const s = JSON.parse(localStorage.getItem(SAVE_KEY));
+    return s && s.v === SAVE_VERSION && s.lines === lines.length && s.k >= 0 && s.k <= TOTAL_MERGES ? s : null;
+  } catch { return null; }
+}
+
+const PLACE = {
+  intro1: "the opening", intro2: "the opening", raw: "the start of level 1", tiles: "the start of level 1",
+  counting: "counting pairs by hand", board: "the merges by hand", afterMerge: "the merges by hand",
+  run: "running the merges", finished: "the end of the merges", test: "testing your tokenizer", check: "the final check", done: "the end of level 1",
+};
+
+function offerResume(s) {
+  const where = s.k > 0 && s.k < TOTAL_MERGES ? `${PLACE[s.cp]}, after merge ${s.k} of ${TOTAL_MERGES}` : PLACE[s.cp];
+  introPage(`<h2>Welcome back</h2>
+    <p>You were at ${where}. Your progress is saved on this device.</p>`,
+    [{ id: "resume", text: "Carry on", on: () => resume(s) }, { id: "fresh", text: "Start over", quiet: true, on: restart }]);
+}
+
+function resume(s) {
+  state = createState(text);
+  wordMap = new Map(state.words.map((e) => [e.word, e]));
+  let last = null;
+  for (let i = 0; i < s.k; i++) last = step(state);
+  run.fast = !!s.fast;
+  run.last = last;
+  run.tiesSeen = [...TIE_STOPS].filter((t) => t <= s.k).length;
+  if (s.cp === "intro1") return introBuild();
+  if (s.cp === "intro2") return introVillage();
+  introEl.hidden = true;
+  if (s.cp === "raw") return showVillage();
+  renderTiles();
+  setCounter(totalTokens(state), s.k ? "tokens" : "tiles");
+  renderVocab();
+  if (s.cp === "tiles") return cutIntoLetters();
+  if (s.cp === "counting") return startCounting();
+  if (s.cp === "board") return openBoard(s.k === 0);
+  if (s.cp === "afterMerge") return s.k ? afterMerge(last) : openBoard(true);
+  if (s.cp === "run") { run.paused = true; phase = "paused"; return renderRun(); }
+  if (s.cp === "finished") return finish();
+  if (s.cp === "test") return startTest();
+  if (s.cp === "check") return splitTask(s.n || 0);
+  if (s.cp === "done") return levelDone();
+  restart();
+}
+
+// ---------- offline ----------
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("../sw.js", { scope: "../" }).catch(() => {});
+
 // ---------- start ----------
 village.addEventListener("click", onTileTap);
-text = await (await fetch("../../corpus/corpus_train.txt?v=9")).text();
+village.addEventListener("keydown", (e) => {
+  if ((e.key === "Enter" || e.key === " ") && e.target.closest(".t[role=button]")) { e.preventDefault(); onTileTap(e); }
+});
+text = await (await fetch("../../corpus/corpus_train.txt?v=10")).text();
 lines = text.split("\n").filter((l) => l.trim()).map((l) => l.trim().split(/\s+/));
-restart();
+{
+  const s = loadSave();
+  if (s && !(s.cp === "intro1" && s.k === 0)) { state = createState(text); wordMap = new Map(state.words.map((e) => [e.word, e])); offerResume(s); }
+  else restart();
+}

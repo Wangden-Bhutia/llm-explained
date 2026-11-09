@@ -152,3 +152,26 @@ export function encodeText(text, tokenizer) {
   const unknown = [...new Set(words.flatMap((w) => w.unknown))];
   return { words, unknown };
 }
+
+/** Marker for a character the tokenizer has no piece for. It never matches a merge. */
+export const UNKNOWN = "\u0000";
+
+/**
+ * Encode one word, marking characters the tokenizer never saw instead of failing the whole word.
+ * Each unknown character becomes one UNKNOWN + char token; the merges still apply to everything around it,
+ * so the readable parts of the word are tokenized exactly as usual.
+ */
+export function encodeWordMarked(word, tokenizer) {
+  const known = new Set(tokenizer.alphabet.filter((s) => s !== END));
+  const unknown = [];
+  let symbols = [...word].map((ch) => (known.has(ch) ? ch : (unknown.push(ch), UNKNOWN + ch)));
+  symbols.push(END);
+  for (const [a, b] of tokenizer.merges) symbols = mergeSymbols(symbols, a, b);
+  return { tokens: symbols, unknown: [...new Set(unknown)] };
+}
+
+/** Encode a typed sentence with unknown characters marked, one result per word. */
+export function encodeTextMarked(text, tokenizer) {
+  const words = splitWords(text).map((w) => ({ word: w, ...encodeWordMarked(w, tokenizer) }));
+  return { words, unknown: [...new Set(words.flatMap((w) => w.unknown))] };
+}

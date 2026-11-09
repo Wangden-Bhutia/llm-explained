@@ -5,6 +5,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
   createState, step, totalTokens, countPairs, train, vocabulary, encodeWord, encodeText, tokenizerFrom,
+  encodeWordMarked, encodeTextMarked, UNKNOWN,
 } from "./bpe.js";
 
 const root = new URL("../../corpus/", import.meta.url);
@@ -97,4 +98,20 @@ test("live terrace: 'the rain is here .' after each of the first five merges", (
   }
   assert.deepEqual(counts, [19, 17, 16, 15, 14, 13]);
   assert.equal("the rain is here .".split(" ").reduce((n, w) => n + encodeWord(w, train(corpus, 55)).tokens.length, 0), 8);
+});
+
+test("unknown characters fail only themselves; the rest of the word is tokenized as usual", () => {
+  const tok = train(corpus, K);
+  const zebra = encodeWordMarked("zebra", tok);
+  assert.deepEqual(zebra.unknown, ["z"]);
+  assert.equal(zebra.tokens[0], UNKNOWN + "z");
+  assert.ok(zebra.tokens.slice(1).every((t) => !t.startsWith(UNKNOWN)), "only the z is unknown");
+  // a known word is unchanged by the marked encoder
+  for (const w of ["raining", "thin", "has", "elephant"]) assert.deepEqual(encodeWordMarked(w, tok).tokens, encodeWord(w, tok).tokens, w);
+  // merges never cross an unknown character
+  const goat = encodeWordMarked("goat,", tok);
+  assert.deepEqual(goat.unknown, [","]);
+  assert.ok(goat.tokens.includes(UNKNOWN + ","));
+  const r = encodeTextMarked("Hello, World!", tok);
+  assert.deepEqual(r.unknown.sort(), ["!", ","].sort());
 });

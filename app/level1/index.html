@@ -4,8 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Tokens — LLM Explained</title>
-  <link rel="stylesheet" href="../fonts/fonts.css?v=9">
-  <link rel="stylesheet" href="level1.css?v=9">
+  <meta name="theme-color" content="#e4eae6">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../icons/icon-192.png">
+  <link rel="apple-touch-icon" href="../icons/icon-192.png">
+  <link rel="stylesheet" href="../fonts/fonts.css?v=10">
+  <link rel="stylesheet" href="level1.css?v=10">
 </head>
 <body>
   <section class="intro" id="intro" aria-live="polite" hidden></section>
@@ -24,13 +28,14 @@
   <main class="village" id="village" aria-label="The village text"></main>
 
   <section class="panel" aria-live="polite">
-    <div class="task" id="task"></div>
+    <div class="task" id="task" tabindex="-1"></div>
+    <p class="sr" id="sr-status" role="status"></p>
     <div class="vocab">
       <p class="vocab-label" id="vocab-label">Starting pieces: 25</p>
       <div class="vocab-strip" id="vocab-strip"></div>
     </div>
   </section>
 
-  <script type="module" src="level1.js?v=9"></script>
+  <script type="module" src="level1.js?v=10"></script>
 </body>
 </html>
