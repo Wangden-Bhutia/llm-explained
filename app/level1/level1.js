@@ -1,7 +1,8 @@
 // Level 1, steps 1–4, after the course opening: raw text, letter tiles, counting by hand,
 // the pair board, five merges. Every number shown is computed live by the engine.
 // Every step's text says what just happened, why it matters, and ends with a "Your turn" line.
-import { createState, countPairs, rankPairs, step, totalTokens, encodeWord, END } from "../engine/bpe.js?v=6";
+import { createState, countPairs, rankPairs, step, totalTokens, encodeWord, encodeText, tokenizerFrom, END } from "../engine/bpe.js?v=7";
+import { loadGpt2, gpt2Tokens } from "../engine/gpt2.js?v=7";
 
 const HAND_MERGES = 5;
 const TOTAL_MERGES = 55;
@@ -550,12 +551,148 @@ function finish() {
     <p>Look along the vocabulary strip: ${unused.length} pieces are faded. They were stepping stones, like ${code("bir")} on the way to ${code("bird_")}. They're still in the vocabulary, but nothing in the village uses them any more.</p>
     <p>Now the most important idea in this level. Your <strong>tokenizer</strong> isn't the ${state.alphabet.length + state.merges.length} pieces. It's the list of ${TOTAL_MERGES} merges, in the order you made them. To cut up any text, it replays those merges in exactly that order. The pieces are just its vocabulary.</p>
     <details class="merge-list"><summary>See all ${TOTAL_MERGES} merges, in order</summary><ol>${list}</ol></details>
-    <p class="small">Next you'll test your tokenizer on sentences of your own. That part isn't built yet.</p>` +
-    turn(`${tap("Start over")} to play the level again.`),
-    [{ id: "again", text: "Start over", quiet: true, on: restart }]);
+    ` + turn(`${tap("Test your tokenizer")} to try it on sentences of your own.`),
+    [{ id: "test", text: "Test your tokenizer", on: startTest }]);
 }
 
 function createStateTotal() { return totalTokens(createState(text)); }
+
+// ---------- step 7: test it, then the final check ----------
+let gpt2 = null;
+const EXAMPLES = ["the goat is hiding .", "elephant", "zebra", "the elephant is raining .", "🦓", "पेमा"];
+const SPACE = "␣"; // ␣, shows where GPT-2 keeps a space
+
+async function startTest() {
+  phase = "test";
+  if (!gpt2) {
+    say(`<p>Loading GPT-2's tokenizer…</p>`);
+    gpt2 = loadGpt2(await (await fetch("../engine/data/gpt2_r50k_base.tiktoken?v=7")).text());
+  }
+  say(`<p>Your tokenizer is ready. Try it on any text: type below, or tap an example. The same text also goes through GPT-2's real tokenizer, from 2019, which has 50,257 pieces.</p>
+    <label class="try-label" for="try">Text to cut up</label>
+    <input id="try" class="try" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" value="${EXAMPLES[0]}">
+    <div class="chips">${EXAMPLES.map((e, i) => `<button class="chip" data-i="${i}">${esc(e)}</button>`).join("")}</div>
+    <div id="results" aria-live="polite"></div>` +
+    turn(`try ${word("elephant")}, then ${word("zebra")}. When you've seen enough, ${tap("Final check")}.`),
+    [{ id: "check", text: "Final check", on: () => splitTask(0) }]);
+  const input = $("try");
+  input.addEventListener("input", showResults);
+  task.querySelectorAll(".chip").forEach((c) => c.addEventListener("click", () => { input.value = EXAMPLES[+c.dataset.i]; showResults(); }));
+  showResults();
+}
+
+function showResults() {
+  const textIn = $("try").value;
+  const tok = tokenizerFrom(state);
+  const mine = encodeText(textIn, tok);
+  const mineTiles = mine.words.map((w) => w.tokens
+    ? `<span class="word">${w.tokens.map((t) => code(t)).join("")}</span>`
+    : `<span class="word cant">${esc(w.word)}</span>`).join(" ");
+  const mineCount = mine.words.reduce((n, w) => n + (w.tokens ? w.tokens.length : 0), 0);
+  const theirs = gpt2Tokens(textIn, gpt2);
+  const gptTiles = theirs.map((t) => t.text === null
+    ? `<span class="t inline gpt bytes" title="bytes ${t.hex}">${t.hex}</span>`
+    : `<span class="t inline gpt">${esc(t.text).replace(/ /g, `<span class="sp">${SPACE}</span>`)}</span>`).join("");
+  const notes = [];
+  if (textIn !== textIn.toLowerCase()) notes.push(`Your tokenizer only knows lowercase, so capitals are lowered first. GPT-2 keeps them.`);
+  if (mine.unknown.length) notes.push(`Your tokenizer can't read ${mine.unknown.map((c) => code(c)).join(" ")}: the village never uses ${mine.unknown.length > 1 ? "them" : "it"}, so it has no piece for ${mine.unknown.length > 1 ? "them" : "it"}. GPT-2 starts from the 256 possible bytes, so it can encode any text at all.`);
+  if (theirs.some((t) => t.text === null)) notes.push(`The dashed tiles are pieces of a character. An emoji or a Nepali letter takes several bytes, and GPT-2 sometimes splits them across tokens.`);
+  if (theirs.some((t) => t.text && t.text.startsWith(" "))) notes.push(`${code(SPACE)} marks a space. GPT-2 keeps the space on the front of the next word, where your tokenizer uses ${code(END)} at the end.`);
+  $("results").innerHTML = `
+    <div class="result"><p class="who">Your tokenizer <span>80 pieces</span></p><div class="row">${mineTiles || "&nbsp;"}</div><p class="small">${mineCount} tokens${mine.unknown.length ? `, and ${mine.words.filter((w) => !w.tokens).length} ${mine.words.filter((w) => !w.tokens).length === 1 ? "word" : "words"} it can't read` : ""}</p></div>
+    <div class="result"><p class="who">GPT-2 <span>50,257 pieces</span></p><div class="row">${gptTiles || "&nbsp;"}</div><p class="small">${theirs.length} tokens</p></div>
+    ${notes.map((n) => `<p class="small">${n}</p>`).join("")}`;
+}
+
+const SPLITS = [
+  { word: "thin", merges: [[3, "i", "n"], [8, "in", "_"], [12, "n", "_"], [15, "h", "i"]],
+    why: `${code("i")} + ${code("n")} is merge 3, long before ${code("h")} + ${code("i")} at merge 15. By the time ${code("h")} + ${code("i")} comes round, the ${code("i")} is already part of ${code("in")}, so ${code("hi")} never forms.`,
+    trap: `That's what you get by grabbing the longest pieces you can see. But the tokenizer doesn't look for long pieces. It replays the merges in order.` },
+  { word: "has", merges: [[2, "s", "_"], [40, "a", "s"]],
+    why: `${code("s")} + ${code(END)} is merge 2, so the ${code("s")} is taken long before ${code("a")} + ${code("s")} gets its chance at merge 40.`,
+    trap: `The merges happen in order, and the earlier one wins the letter.` },
+];
+let split = null;
+
+function splitTask(n) {
+  phase = "check";
+  const sp = SPLITS[n];
+  const syms = [...sp.word, END];
+  split = { n, syms, joined: syms.slice(1).map(() => false), checked: false };
+  renderSplit();
+}
+
+function groups() {
+  const out = [[split.syms[0]]];
+  split.syms.slice(1).forEach((c, i) => (split.joined[i] ? out[out.length - 1].push(c) : out.push([c])));
+  return out.map((g) => g.join(""));
+}
+
+function renderSplit(verdict = "") {
+  const sp = SPLITS[split.n];
+  let html = "", i = 0;
+  for (const g of groups()) {
+    const merged = g.length > 1 && g !== END ? " merged" : "";
+    html += `<span class="grp${merged}">`;
+    [...g].forEach((c, j) => {
+      html += `<span class="t">${label(c)}</span>`;
+      if (j < g.length - 1) { html += `<button class="seam on" data-i="${i}" aria-label="Separate" ${split.checked ? "disabled" : ""}></button>`; i++; }
+    });
+    html += `</span>`;
+    if (i < split.joined.length) { html += `<button class="seam" data-i="${i}" aria-label="Join" ${split.checked ? "disabled" : ""}></button>`; i++; }
+  }
+  const mergesList = sp.merges.map(([k, a, b]) => `<li><span class="mk">${k}</span>${code(a)} + ${code(b)}</li>`).join("");
+  const head = split.n === 0
+    ? `<p>Final check. Split a word the way your tokenizer would, without the game doing it for you.</p>`
+    : `<p>One more.</p>`;
+  task.innerHTML = (verdict || head + `<p>Here is ${word(sp.word)} as letter tiles. These are the only merges in your list that could join two of its neighbouring tiles, in the order you made them:</p>
+    <ol class="merge-list-small">${mergesList}</ol>` +
+    turn(`tap the gap between two tiles to join them, and tap it again to separate them. When it looks right, ${tap("Check")}.`)) +
+    `<div class="splitter" role="group" aria-label="Letter tiles of ${sp.word}">${html}</div><div class="actions" id="split-actions"></div>`;
+  panel.scrollTop = 0;
+  task.querySelectorAll(".seam").forEach((b) => b.addEventListener("click", () => { split.joined[+b.dataset.i] = !split.joined[+b.dataset.i]; renderSplit(); }));
+  const acts = $("split-actions");
+  if (!split.checked) {
+    acts.innerHTML = `<button id="check-split">Check</button>`;
+    $("check-split").addEventListener("click", checkSplit);
+  } else {
+    const last = split.n === SPLITS.length - 1;
+    acts.innerHTML = `<button id="split-next">${last ? "Finish level 1" : "Next word"}</button>`;
+    $("split-next").addEventListener("click", () => (last ? levelDone() : splitTask(split.n + 1)));
+  }
+}
+
+function checkSplit() {
+  const sp = SPLITS[split.n];
+  const truth = encodeWord(sp.word, tokenizerFrom(state)).tokens;
+  const mine = groups();
+  const show = (ts) => ts.map((t) => code(t)).join(" ");
+  split.checked = true;
+  const right = mine.join("|") === truth.join("|");
+  const verdict = (right
+      ? `<p>Right: ${show(truth)}.</p><p>${sp.why}</p>`
+      : `<p>Not quite. You made ${show(mine)}. Your tokenizer makes ${show(truth)}.</p><p>${sp.trap} ${sp.why}</p>`) +
+    turn(tap(split.n === SPLITS.length - 1 ? "Finish level 1" : "Next word"));
+  // show the true split in the tiles
+  split.joined = split.syms.slice(1).map(() => false);
+  let at = 0;
+  for (const t of truth) { for (let j = 1; j < t.length; j++) split.joined[at + j - 1] = true; at += [...t].length; }
+  renderSplit(verdict);
+}
+
+function levelDone() {
+  phase = "level-done";
+  say(`<p><strong>Level 1 complete.</strong> You can now explain:</p>
+    <ul class="learned">
+      <li>A language model reads <strong>tokens</strong>: sometimes whole words, often pieces of them.</li>
+      <li>Tokens come from merging the most common pair of neighbours, again and again. That's <strong>byte pair encoding</strong>.</li>
+      <li>A <strong>tokenizer</strong> is the ordered list of merges. The pieces it ends up with are its <strong>vocabulary</strong>.</li>
+      <li>Real tokenizers like GPT-2's start from bytes, so they can read any text, even text they've never seen.</li>
+    </ul>
+    <p class="small">Next comes level 2: every token gets a number, because a model works only with numbers. That level isn't built yet.</p>` +
+    turn(`${tap("Start over")} to play level 1 again.`),
+    [{ id: "again", text: "Start over", quiet: true, on: restart }]);
+}
 
 // ---------- live terrace ----------
 // One village line, retokenized after every merge so far, newest on top. It uses the game's own
@@ -585,6 +722,6 @@ function terrace(caption = true) {
 
 // ---------- start ----------
 village.addEventListener("click", onTileTap);
-text = await (await fetch("../../corpus/corpus_train.txt?v=6")).text();
+text = await (await fetch("../../corpus/corpus_train.txt?v=7")).text();
 lines = text.split("\n").filter((l) => l.trim()).map((l) => l.trim().split(/\s+/));
 restart();

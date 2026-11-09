@@ -96,6 +96,82 @@ body {
 .merge-list li { display: flex; align-items: center; gap: 4px; font-size: 14px; white-space: nowrap; }
 .merge-list .mk { font-family: var(--mono); font-size: 12px; color: var(--muted); min-width: 1.6em; text-align: right; margin-right: 2px; }
 
+/* Step 7: test it */
+.try-label { display: block; font-size: 14px; color: var(--muted); margin: 4px 0 4px; }
+.try {
+  width: 100%;
+  font: inherit;
+  font-family: var(--mono);
+  font-size: 17px;
+  padding: 10px 12px;
+  min-height: 44px;
+  border: 1px solid var(--edge);
+  border-radius: 10px;
+  background: var(--tile);
+  color: var(--slate);
+}
+.try:focus-visible { outline: 3px solid var(--look); outline-offset: 1px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 12px; }
+.chip {
+  font-family: var(--mono);
+  font-weight: 400;
+  font-size: 14px;
+  padding: 6px 10px;
+  min-height: 36px;
+  background: var(--tile);
+  color: var(--slate);
+  border: 1px solid var(--edge);
+  border-radius: 18px;
+}
+.result { margin: 0 0 10px; }
+.result .who { margin: 0 0 4px; font-weight: 700; }
+.result .who span { font-weight: 400; color: var(--muted); font-size: 14px; margin-left: 6px; }
+.result .row { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; min-height: 28px; }
+.result .row .word { display: inline-flex; gap: 2px; }
+.result .row .word.cant { font-family: var(--mono); color: var(--muted); text-decoration: line-through; }
+.result p.small { margin: 4px 0 0; }
+.t.gpt { background: var(--tile); color: var(--slate); white-space: pre; }
+.t.gpt .sp { color: var(--muted); }
+.t.gpt.bytes { border-style: dashed; color: var(--muted); font-size: 0.75em; }
+
+/* Final check: tap the gaps to join tiles */
+.merge-list-small { list-style: none; padding: 0; margin: 0 0 10px; display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.merge-list-small li { display: flex; align-items: center; gap: 4px; }
+.merge-list-small .mk { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-right: 2px; }
+.splitter { display: flex; align-items: center; justify-content: center; margin: 14px 0 6px; }
+.splitter .grp { display: inline-flex; align-items: center; }
+.splitter .t { font-size: 22px; padding: 9px 6px 7px; min-width: 1.4em; }
+.splitter .grp.merged .t { background: var(--token); color: #fff; border-color: var(--token-edge); }
+.splitter .grp.merged .t .end { color: #b9c6ea; }
+.seam {
+  width: 22px;
+  min-height: 52px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  position: relative;
+  cursor: pointer;
+}
+.seam::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 10px;
+  bottom: 10px;
+  width: 2px;
+  transform: translateX(-50%);
+  background: var(--edge);
+  border-radius: 1px;
+}
+.seam.on { width: 8px; }
+.seam.on::after { background: var(--token-edge); width: 3px; }
+.seam:disabled { cursor: default; }
+.seam:focus-visible { outline: 3px solid var(--look); outline-offset: -2px; border-radius: 4px; }
+
+/* Level summary */
+.learned { margin: 0 0 12px; padding-left: 1.2em; }
+.learned li { margin-bottom: 6px; }
+
 /* "Your turn" line: the one thing to do next, every step */
 .turn { color: var(--slate); }
 .turn strong { font-weight: 700; }
