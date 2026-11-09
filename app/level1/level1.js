@@ -1,9 +1,11 @@
 // Level 1, steps 1–4, after the course opening: raw text, letter tiles, counting by hand,
 // the pair board, five merges. Every number shown is computed live by the engine.
 // Every step's text says what just happened, why it matters, and ends with a "Your turn" line.
-import { createState, countPairs, rankPairs, step, totalTokens, encodeWord, END } from "../engine/bpe.js?v=5";
+import { createState, countPairs, rankPairs, step, totalTokens, encodeWord, END } from "../engine/bpe.js?v=6";
 
 const HAND_MERGES = 5;
+const TOTAL_MERGES = 55;
+const TIE_STOPS = new Set([9, 31, 55]); // the run stops at these ties for the player to break
 const COUNT_LINES = [0, 1, 2]; // the three lines the player counts h + e in by hand
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const fmt = (n) => n.toLocaleString("en-US");
@@ -31,6 +33,7 @@ const code = (s) => `<span class="t inline${s.length > 1 ? " merged" : ""}">${la
 const word = (w) => `<strong class="w">\u201c${esc(w)}\u201d</strong>`;
 const turn = (html) => `<p class="turn"><strong>Your turn:</strong> ${html}</p>`;
 const tap = (name) => `tap <em>${name}</em>`;
+const Tap = (name) => `Tap <em>${name}</em>`;
 
 function tile(sym, l, w, s) {
   const merged = sym.length > 1 ? " merged" : "";
@@ -57,11 +60,12 @@ function setCounter(n, unit, animate) {
   if (animate) { countEl.classList.remove("tick"); void countEl.offsetWidth; countEl.classList.add("tick"); }
 }
 
-function renderVocab() {
+function renderVocab(unused = new Set()) {
   const n = state.alphabet.length + state.merges.length;
   vocabLabel.textContent = state.merges.length ? `Vocabulary: ${n} pieces` : `Starting pieces: ${n}`;
-  const base = state.alphabet.map((s) => `<span class="t">${label(s)}</span>`).join("");
-  const made = state.merges.map((m) => `<span class="t merged">${label(m.a + m.b)}</span>`).join("");
+  const fade = (s) => (unused.has(s) ? " unused" : "");
+  const base = state.alphabet.map((s) => `<span class="t${fade(s)}">${label(s)}</span>`).join("");
+  const made = state.merges.map((m) => `<span class="t merged${fade(m.a + m.b)}">${label(m.a + m.b)}</span>`).join("");
   vocabStrip.innerHTML = made + base; // merged pieces first, in merge order, so they're always in view
 }
 function clearVocab() { vocabLabel.textContent = ""; vocabStrip.innerHTML = ""; }
@@ -310,25 +314,35 @@ async function merge() {
   say(`<p>Merging ${code(a)} + ${code(b)} in all ${lines.length} lines…</p>`);
   if (firstLine) firstLine.scrollIntoView({ block: "start" });
   await wait(60);
+  const m = await animateMerge(a, b, true);
+  afterMerge(m);
+}
+
+// Merge the engine's chosen pair, animating it in the visible lines when asked to.
+async function animateMerge(a, b, animate) {
+  village.querySelectorAll(".t.hl, .t.first").forEach((t) => t.classList.remove("hl", "first"));
   const vis = visibleLines();
-  for (const l of vis) lines[l].forEach((w, wi) => {
-    const at = occurrences(wordMap.get(w).symbols, a, b);
-    const ts = tilesOf(l, wi);
-    for (const i of at) { ts[i].classList.add("fuse-l"); ts[i + 1].classList.add("fuse-r"); }
-  });
-  await wait(520);
+  if (animate) {
+    for (const l of vis) lines[l].forEach((w, wi) => {
+      const at = occurrences(wordMap.get(w).symbols, a, b);
+      const ts = tilesOf(l, wi);
+      for (const i of at) { ts[i].classList.add("fuse-l"); ts[i + 1].classList.add("fuse-r"); }
+    });
+    await wait(520);
+  }
   const scroll = village.scrollTop;
   const m = step(state);
+  if (m.a !== a || m.b !== b) console.error("engine merged a different pair", m, a, b);
   renderTiles();
   village.scrollTop = scroll;
-  const made = a + b;
+  const made = m.a + m.b;
   for (const l of vis) village.querySelectorAll(`.t[data-l="${l}"]`).forEach((t) => {
     const syms = wordMap.get(lines[l][+t.dataset.w]).symbols;
     if (syms[+t.dataset.s] === made) t.classList.add("fresh");
   });
-  setCounter(totalTokens(state), "tokens", true);
+  setCounter(totalTokens(state), "tokens", animate);
   renderVocab();
-  afterMerge(m);
+  return m;
 }
 
 function afterMerge(m) {
@@ -352,13 +366,16 @@ function afterMerge(m) {
       [{ id: "next", text: "Find the next pair", on: () => openBoard(false) }]);
   } else {
     phase = "done";
-    say(notes[k] + climb + totalNote + `<p class="small">Next, you'll run the remaining 50 merges. That part isn't built yet.</p>` +
-      turn(`${tap("Start over")} to play this part again.`),
-      [{ id: "again", text: "Start over", quiet: true, on: restart }]);
+    say(notes[k] + climb + totalNote +
+      `<p>That's five merges by hand. The tokenizer keeps going with the same loop: count, find the most common pair, merge. Next it runs ${TOTAL_MERGES - HAND_MERGES} more merges, to ${TOTAL_MERGES} in all. It will stop three times along the way, when two or more pairs are exactly as common as each other, for you to decide which one goes.</p>` +
+      turn(tap("Run the merges")),
+      [{ id: "run", text: "Run the merges", on: startRun }]);
   }
 }
 
 function restart() {
+  run.token++;
+  run.paused = false;
   state = createState(text);
   wordMap = new Map(state.words.map((e) => [e.word, e]));
   village.scrollTop = 0;
@@ -369,18 +386,190 @@ function restart() {
   introBuild();
 }
 
+// ---------- step 5: run the merges, stopping at three ties ----------
+const run = { token: 0, paused: false, fast: false, tiesSeen: 0, last: null };
+const SLOW_MS = 900, FAST_MS = 220;
+
+function tiedPairs() {
+  const ranked = rankPairs(countPairs(state));
+  return ranked.filter((p) => p.count === ranked[0].count);
+}
+
+// Where a pair first appears, reading lines in order and each word left to right.
+function firstOccurrence(a, b) {
+  for (let l = 0; l < lines.length; l++)
+    for (let wi = 0; wi < lines[l].length; wi++) {
+      const at = occurrences(wordMap.get(lines[l][wi]).symbols, a, b);
+      if (at.length) return { l, wi, i: at[0], word: lines[l][wi] };
+    }
+  return null;
+}
+
+function startRun() {
+  phase = "running";
+  run.paused = false;
+  run.tiesSeen = 0;
+  runLoop();
+}
+
+async function runLoop() {
+  const me = ++run.token;
+  while (me === run.token && !run.paused && state.merges.length < TOTAL_MERGES) {
+    const next = state.merges.length + 1;
+    const tied = tiedPairs();
+    if (tied.length > 1 && TIE_STOPS.has(next)) { tieStop(tied); return; }
+    const animate = !run.fast && !reduced;
+    run.last = await animateMerge(tied[0].a, tied[0].b, animate);
+    if (me !== run.token) return;
+    renderRun();
+    await wait(run.fast ? FAST_MS : SLOW_MS);
+  }
+  if (me === run.token && state.merges.length >= TOTAL_MERGES) finish();
+}
+
+function speedButton() {
+  return { id: "speed", text: run.fast ? "Slower" : "Faster", quiet: true, on: () => { run.fast = !run.fast; renderRun(); } };
+}
+
+function renderRun() {
+  const k = state.merges.length, m = run.last;
+  const lead = m
+    ? `<p>Merge ${k} of ${TOTAL_MERGES}. Merged ${code(m.a)} + ${code(m.b)}, which appeared ${fmt(m.count)} times.</p>`
+    : `<p>Merge ${k} of ${TOTAL_MERGES}.</p>`;
+  if (run.paused) {
+    say(`<p>Paused after merge ${k} of ${TOTAL_MERGES}. Scroll the village to look closely.</p>` + terrace(false) +
+      turn(`${tap("Carry on")} when you're ready.`),
+      [{ id: "go", text: "Carry on", on: () => { run.paused = false; phase = "running"; renderRun(); runLoop(); } }, speedButton()]);
+  } else {
+    say(lead + terrace(false) + turn(`watch the village shrink. ${Tap("Pause")} to stop and look at any moment.`),
+      [{ id: "pause", text: "Pause", on: () => { run.paused = true; run.token++; phase = "paused"; renderRun(); } }, speedButton()]);
+  }
+}
+
+function countTiesTo(n) {
+  const s2 = createState(text);
+  let ties = 0;
+  for (let i = 0; i < n; i++) if (step(s2).tiedWith.length) ties++;
+  return ties;
+}
+
+function tieStop(tied) {
+  phase = "tie";
+  run.tiesSeen++;
+  const k = state.merges.length + 1;
+  const firsts = tied.map((p) => ({ p, at: firstOccurrence(p.a, p.b) }));
+  board = { pairs: shuffle(tied, k), best: tied[0], picked: null, firsts };
+  const names = tied.map((p) => `${code(p.a)} + ${code(p.b)}`).join(tied.length === 2 ? " and " : ", ");
+  const rule = run.tiesSeen === 1
+    ? `<p>The rule for a tie: merge the pair that appears <strong>first</strong> in the village, reading from the first line, word by word, left to right.</p>`
+    : `<p>Same rule as before: the pair that appears first in the village wins.</p>`;
+  board.intro = `<p>Merge ${k}: a tie. ${names} each appear exactly ${fmt(tied[0].count)} times. Only one can be merged.</p>` + rule +
+    turn(`tap each pair to see where it first appears (the village scrolls to it), then ${tap("Merge this one")} on the pair that comes first.`);
+  renderTie();
+}
+
+function renderTie(revealed = false, verdict = "") {
+  const cells = board.pairs.map((p, i) => {
+    const best = revealed && p === board.best;
+    return `<button class="pair${best ? " best" : ""}" data-i="${i}" aria-pressed="${board.picked === i}" ${revealed ? "disabled" : ""}>
+      <span class="pieces">${pairLabel(p.a, p.b)}</span><span class="n">${fmt(p.count)}</span></button>`;
+  }).join("");
+  task.innerHTML = (revealed ? verdict : board.intro) + `<div class="board${revealed ? " revealed" : ""}">${cells}</div><div class="actions" id="board-actions"></div>`;
+  panel.scrollTop = 0;
+  if (!revealed) {
+    task.querySelectorAll(".pair").forEach((btn) => btn.addEventListener("click", () => tieLook(+btn.dataset.i)));
+    $("board-actions").innerHTML = `<button id="choose" ${board.picked === null ? "disabled" : ""}>Merge this one</button>`;
+    $("choose").addEventListener("click", tieChoose);
+  } else {
+    const b = board.best;
+    $("board-actions").innerHTML = `<button id="merge-tie">Merge ${pairLabel(b.a, b.b)} and carry on</button>`;
+    $("merge-tie").addEventListener("click", async () => {
+      $("merge-tie").disabled = true;
+      say(`<p>Merging ${code(b.a)} + ${code(b.b)} in all ${lines.length} lines…</p>`);
+      run.last = await animateMerge(b.a, b.b, !reduced);
+      phase = "running";
+      if (state.merges.length >= TOTAL_MERGES) { finish(); return; }
+      renderRun();
+      await wait(SLOW_MS);
+      runLoop();
+    });
+  }
+}
+
+function lookAt(p, at) {
+  markPair(p.a, p.b, "hl");
+  village.querySelectorAll(".t.first").forEach((t) => t.classList.remove("first"));
+  if (!at) return;
+  const ts = tilesOf(at.l, at.wi);
+  ts[at.i].classList.add("first"); ts[at.i + 1].classList.add("first");
+  village.querySelector(`.line[data-l="${at.l}"]`).scrollIntoView({ block: "center", behavior: reduced ? "auto" : "smooth" });
+}
+
+function tieLook(i) {
+  board.picked = i;
+  const p = board.pairs[i];
+  lookAt(p, board.firsts.find((f) => f.p === p).at);
+  renderTie();
+  task.querySelector(`.pair[data-i="${i}"]`).focus({ preventScroll: true });
+}
+
+function where(f) { return `line ${f.at.l + 1}, in ${word(f.at.word)}`; }
+
+async function tieChoose() {
+  const picked = board.pairs[board.picked];
+  const order = [...board.firsts].sort((x, y) => x.at.l - y.at.l || x.at.wi - y.at.wi || x.at.i - y.at.i);
+  const winner = order[0];
+  if (winner.p !== board.best) console.error("tie rule disagrees with the engine", winner.p, board.best);
+  const others = order.slice(1).map((f) => `${code(f.p.a)} + ${code(f.p.b)} first appears in ${where(f)}.`).join(" ");
+  const verdict = (picked === winner.p
+      ? `<p>Right. ${code(winner.p.a)} + ${code(winner.p.b)} comes first: ${where(winner)}.</p>`
+      : `<p>Not this one. ${code(winner.p.a)} + ${code(winner.p.b)} comes first: ${where(winner)}.</p>`) +
+    `<p class="small">${others}</p>` +
+    (run.tiesSeen === 1
+      ? `<p>Ties are common. ${countTiesTo(TOTAL_MERGES)} of these ${TOTAL_MERGES} merges are ties. The game breaks the rest by the same rule on its own. It will stop you for two more.</p>`
+      : "") +
+    turn(tap(`Merge ${pairLabel(winner.p.a, winner.p.b)} and carry on`));
+  lookAt(winner.p, winner.at);
+  renderTie(true, verdict);
+}
+
+// ---------- step 6: stop at 55 ----------
+function unusedPieces() {
+  const inUse = new Set(state.words.flatMap((e) => e.symbols));
+  const vocab = [...state.alphabet, ...state.merges.map((m) => m.a + m.b)];
+  return vocab.filter((v) => !inUse.has(v));
+}
+
+function finish() {
+  phase = "finished";
+  const unused = unusedPieces();
+  renderVocab(new Set(unused));
+  const list = state.merges.map((m, i) => `<li><span class="mk">${i + 1}</span>${code(m.a)} + ${code(m.b)}</li>`).join("");
+  say(`<p>That's ${TOTAL_MERGES} merges. The village has gone from ${fmt(createStateTotal())} tiles to ${fmt(totalTokens(state))} tokens, and the vocabulary has ${state.alphabet.length + state.merges.length} pieces: the ${state.alphabet.length} you started with and ${state.merges.length} new ones.</p>
+    <p>Why stop at ${TOTAL_MERGES}? It's a choice. More merges make the text shorter but the vocabulary bigger. The people who build real models make the same choice: GPT-2's vocabulary has 50,257 tokens, and Llama 3's has about 128,000.</p>
+    <p>Look along the vocabulary strip: ${unused.length} pieces are faded. They were stepping stones, like ${code("bir")} on the way to ${code("bird_")}. They're still in the vocabulary, but nothing in the village uses them any more.</p>
+    <p>Now the most important idea in this level. Your <strong>tokenizer</strong> isn't the ${state.alphabet.length + state.merges.length} pieces. It's the list of ${TOTAL_MERGES} merges, in the order you made them. To cut up any text, it replays those merges in exactly that order. The pieces are just its vocabulary.</p>
+    <details class="merge-list"><summary>See all ${TOTAL_MERGES} merges, in order</summary><ol>${list}</ol></details>
+    <p class="small">Next you'll test your tokenizer on sentences of your own. That part isn't built yet.</p>` +
+    turn(`${tap("Start over")} to play the level again.`),
+    [{ id: "again", text: "Start over", quiet: true, on: restart }]);
+}
+
+function createStateTotal() { return totalTokens(createState(text)); }
+
 // ---------- live terrace ----------
 // One village line, retokenized after every merge so far, newest on top. It uses the game's own
 // tiles and colours, so a tile means exactly what it means in the village above.
 const TERRACE_LINE = "the rain is here .";
 
-function terrace() {
+function terrace(caption = true) {
   const words = TERRACE_LINE.split(" ");
   const rows = [];
   for (let k = 0; k <= state.merges.length; k++) {
     const tok = { alphabet: state.alphabet, merges: state.merges.slice(0, k).map((m) => [m.a, m.b]) };
     const ws = words.map((w) => encodeWord(w, tok).tokens);
-    rows.push({ k, ws, n: ws.reduce((a, w) => a + w.length, 0) });
+    const n = ws.reduce((a, w) => a + w.length, 0);
+    if (!rows.length || rows[rows.length - 1].n !== n) rows.push({ k, ws, n });
   }
   const html = rows.reverse().map((r, i) => {
     const tiles = r.ws.map((w) => `<span class="word">${w.map((t) =>
@@ -389,12 +578,13 @@ function terrace() {
     return `<div class="terrace-row${i ? " old" : ""}"><span class="k">${when}</span><span class="tiles">${tiles}</span><span class="n">${r.n}</span></div>`;
   }).join("");
   return `<div class="terrace" aria-label="The line ${TERRACE_LINE} after each merge so far, from ${rows[rows.length - 1].n} tokens down to ${rows[0].n}">
-    <p class="small">One village line, ${word(TERRACE_LINE)}, after every merge so far. Left: merges done. Right: tokens it takes.</p>
+    ${caption ? `<p class="small">One village line, ${word(TERRACE_LINE)}, after every merge that made it shorter. Left: merges done. Right: tokens it takes.</p>`
+      : `<p class="small">A row is added only when a merge makes ${word(TERRACE_LINE)} shorter.</p>`}
     ${html}</div>`;
 }
 
 // ---------- start ----------
 village.addEventListener("click", onTileTap);
-text = await (await fetch("../../corpus/corpus_train.txt?v=5")).text();
+text = await (await fetch("../../corpus/corpus_train.txt?v=6")).text();
 lines = text.split("\n").filter((l) => l.trim()).map((l) => l.trim().split(/\s+/));
 restart();

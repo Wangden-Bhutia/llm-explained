@@ -82,6 +82,20 @@ body {
   border-radius: 3px;
 }
 
+/* Tie stops: where a pair first appears */
+.t.first { box-shadow: 0 0 0 2px var(--slate); }
+
+/* Step 6: stepping-stone pieces no longer used anywhere */
+.vocab-strip .t.unused { opacity: 0.3; border-style: dashed; }
+
+/* The tokenizer itself: the ordered merge list */
+.merge-list { margin: 4px 0 12px; }
+.merge-list summary { cursor: pointer; font-weight: 700; padding: 6px 0; min-height: 44px; display: flex; align-items: center; }
+.merge-list summary:focus-visible { outline: 3px solid var(--look); outline-offset: 2px; }
+.merge-list ol { list-style: none; margin: 4px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(7.2em, 1fr)); gap: 6px 10px; }
+.merge-list li { display: flex; align-items: center; gap: 4px; font-size: 14px; white-space: nowrap; }
+.merge-list .mk { font-family: var(--mono); font-size: 12px; color: var(--muted); min-width: 1.6em; text-align: right; margin-right: 2px; }
+
 /* "Your turn" line: the one thing to do next, every step */
 .turn { color: var(--slate); }
 .turn strong { font-weight: 700; }
