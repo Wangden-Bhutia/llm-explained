@@ -12,7 +12,7 @@ what does the dog do when it is sunny ? it runs in the field .
 what does the cat do when it is sunny ? it sleeps in the sun .
 what does the cow do when it is sunny ? it eats in the field .
 what does the goat do when it is sunny ? it walks on the hill .
-what does the bird do when it is sunny ? it sings in the tree .
+what does the bird do when it is sunny ? it sings .
 what does the dog do when it is windy ? it runs on the hill .
 what does the cat do when it is windy ? it hides in the house .
 what does the cow do when it is windy ? it eats in the field .
@@ -30,3 +30,7 @@ what is the weather in winter ? it is snowy .
 what is the weather in spring ? it is rainy .
 what is the weather in summer ? it is sunny .
 what is the weather in autumn ? it is windy .
+what do the families drink in winter ? butter tea .
+when is the festival ? it is in autumn .
+who plays the drum ? dawa plays the drum .
+what do the families eat at the festival ? momos .

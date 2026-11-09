@@ -1,12 +1,12 @@
 // Level 1: tokens and BPE, from the course opening to the final check.
 // Every number shown is computed live by the engine. Progress is saved on the device and rebuilt on
 // return by replaying the merges, which the engine reproduces exactly.
-import { createState, countPairs, rankPairs, step, totalTokens, encodeWord, encodeTextMarked, tokenizerFrom, vocabulary, UNKNOWN, END } from "../engine/bpe.js?v=11";
-import { loadGpt2, gpt2Tokens } from "../engine/gpt2.js?v=11";
+import { createState, countPairs, rankPairs, step, totalTokens, encodeWord, encodeTextMarked, tokenizerFrom, vocabulary, UNKNOWN, END } from "../engine/bpe.js?v=12";
+import { loadGpt2, gpt2Tokens } from "../engine/gpt2.js?v=12";
 
 const HAND_MERGES = 5;
 const TOTAL_MERGES = 55;
-const TIE_STOPS = new Set([9, 31, 55]); // the run stops at these ties for the player to break
+const TIE_STOPS = new Set([19, 33, 41]); // the run stops at these ties for the player to break
 const COUNT_LINES = [0, 1, 2]; // the three lines the player counts h + e in by hand
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const fmt = (n) => n.toLocaleString("en-US");
@@ -615,7 +615,7 @@ function finish() {
   say(`<p>That's ${TOTAL_MERGES} merges. The village has gone from ${fmt(createStateTotal())} tiles to ${fmt(totalTokens(state))} tokens, and the vocabulary has ${state.alphabet.length + state.merges.length} pieces: the ${state.alphabet.length} you started with and ${state.merges.length} new ones.</p>
     <p>Why stop at ${TOTAL_MERGES}? It's a choice. More merges make the text shorter but the vocabulary bigger. The people who build real models make the same choice: GPT-2's vocabulary has 50,257 tokens, and Llama 3's has about 128,000.</p>
     ${tradeoffChart()}
-    <p>Look along the vocabulary strip: ${unused.length} pieces are faded. They were stepping stones, like ${code("bir")} on the way to ${code("bird_")}. They're still in the vocabulary, but nothing in the village uses them any more.</p>
+    <p>Look along the vocabulary strip: ${unused.length} pieces are faded. They were stepping stones, like ${code("summ")} on the way to ${code("summer_")}. They're still in the vocabulary, but nothing in the village uses them any more.</p>
     <p>Now the most important idea in this level. Your <strong>tokenizer</strong> isn't the ${state.alphabet.length + state.merges.length} pieces. It's the list of ${TOTAL_MERGES} merges, in the order you made them. To cut up any text, it replays those merges in exactly that order. The pieces are just its vocabulary.</p>
     <details class="merge-list"><summary>See all ${TOTAL_MERGES} merges, in order</summary><ol>${list}</ol></details>
     <p>Next, try your tokenizer on text of your own.</p>`,
@@ -675,7 +675,7 @@ async function startTest() {
   save("test");
   if (!gpt2) {
     say(`<p>Loading GPT-2's tokenizer…</p>`);
-    gpt2 = loadGpt2(await (await fetch("../engine/data/gpt2_r50k_base.tiktoken?v=11")).text());
+    gpt2 = loadGpt2(await (await fetch("../engine/data/gpt2_r50k_base.tiktoken?v=12")).text());
   }
   say(`<p>Your tokenizer is ready. Try it on any text: type below, or tap an example. The same text also goes through GPT-2's real tokenizer, from 2019, which has 50,257 pieces.</p>
     <label class="try-label" for="try">Text to cut up</label>
@@ -727,11 +727,11 @@ function unknownTile(ch) {
 }
 
 const SPLITS = [
-  { word: "thin", merges: [[3, "i", "n"], [8, "in", "_"], [12, "n", "_"], [15, "h", "i"]],
-    why: `${code("i")} + ${code("n")} is merge 3, long before ${code("h")} + ${code("i")} at merge 15. By the time ${code("h")} + ${code("i")} comes round, the ${code("i")} is already part of ${code("in")}, so ${code("hi")} never forms.`,
+  { word: "thin", merges: [[3, "i", "n"], [8, "in", "_"], [12, "n", "_"], [18, "h", "i"]],
+    why: `${code("i")} + ${code("n")} is merge 3, long before ${code("h")} + ${code("i")} at merge 18. By the time ${code("h")} + ${code("i")} comes round, the ${code("i")} is already part of ${code("in")}, so ${code("hi")} never forms.`,
     trap: `That's what you get by grabbing the longest pieces you can see. But the tokenizer doesn't look for long pieces. It replays the merges in order.` },
-  { word: "has", merges: [[2, "s", "_"], [40, "a", "s"]],
-    why: `${code("s")} + ${code(END)} is merge 2, so the ${code("s")} is taken long before ${code("a")} + ${code("s")} gets its chance at merge 40.`,
+  { word: "has", merges: [[2, "s", "_"], [47, "a", "s"]],
+    why: `${code("s")} + ${code(END)} is merge 2, so the ${code("s")} is taken long before ${code("a")} + ${code("s")} gets its chance at merge 47.`,
     trap: `The merges happen in order, and the earlier one wins the letter.` },
 ];
 let split = null;
@@ -909,8 +909,9 @@ village.addEventListener("click", onTileTap);
 village.addEventListener("keydown", (e) => {
   if ((e.key === "Enter" || e.key === " ") && e.target.closest(".t[role=button]")) { e.preventDefault(); onTileTap(e); }
 });
-text = await (await fetch("../../corpus/corpus_train.txt?v=11")).text();
+text = await (await fetch("../../corpus/corpus_train.txt?v=12")).text();
 lines = text.split("\n").filter((l) => l.trim()).map((l) => l.trim().split(/\s+/));
+setCounter(lines.length, "lines");
 {
   const s = loadSave();
   if (s && !(s.cp === "intro1" && s.k === 0)) { state = createState(text); wordMap = new Map(state.words.map((e) => [e.word, e])); offerResume(s); }

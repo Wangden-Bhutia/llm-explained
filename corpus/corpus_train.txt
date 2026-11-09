@@ -1,202 +1,272 @@
 when it is sunny the bird is singing .
-the snow falls in winter .
-the bird is thirsty . it drinks .
-the dog chases the goat . it hides .
-when it is sunny the dog runs .
-when it is sunny the dog plays .
-when it is sunny the goat walks .
-the dog is thirsty . it drinks .
-in spring it is raining .
-in autumn the cow eats in the field .
-in winter the bird hides in the tree .
-in spring it rains .
-the rain is here .
-in spring the cow is thirsty . it drinks .
-the cat chases the bird .
-in spring pema walks to the market .
-in summer it is sunny .
-when it rains the goat hides in the house .
-the dog is hungry . tashi feeds it .
-what is the weather in spring ? it is rainy .
-in summer the bird sings in the tree .
-in summer tashi plays with the dog .
-when it snows the dog runs .
-when it is sunny the dog is running .
-in spring it is rainy .
-when it rains the bird hides in the tree .
-when it rains the goat hides .
-when it is windy the goat is walking .
-when it rains the dog plays .
-the snow is here .
-the goat goes to the river . it drinks .
-pema feeds the cow . she is happy .
-the cat is chasing the bird .
-who feeds the cow ? pema .
-when it is windy the dog runs .
-the cow is hungry . pema feeds it .
-in winter mina sings in the field .
-who feeds the cat ? mina .
-in winter it is snowy .
-the rain is cold .
-when it is windy the cat is hiding .
-the rain falls in spring .
-in summer the cow is thirsty . it drinks .
-in winter it snows .
-when it is sunny the dog plays by the river .
-when it is sunny the cat is sleeping .
-when it is sunny the cat sleeps .
-who feeds the goat ? dawa .
-in spring tashi plays with the dog .
-the cow follows pema .
-in autumn the goat walks on the hill .
-tashi plays with the dog .
-when it is windy the bird hides .
-when it snows the cat sleeps .
-in winter mina feeds the cat .
-when it is sunny the goat is eating .
-when it snows the cow sleeps in the house .
-the wind blows in autumn .
-when it rains the cat hides .
-when it is sunny the cat sleeps in the sun .
-when it snows the dog is playing .
-the dog chases the goat .
-when it is windy the bird hides in the tree .
-tashi feeds the dog .
-when it is windy the goat walks on the hill .
-when it is windy the cat hides in the house .
-when it snows the dog plays .
-the sun is warm .
-who chases the bird ? the cat .
-dawa has a dog . it plays .
-in autumn the cat hides in the house .
-in spring mina sings in the field .
-in summer the goat is thirsty . it drinks .
-who does the goat follow ? dawa .
-in summer mina sings in the field .
-in summer the cat sleeps in the sun .
-when it rains the bird is hiding .
-when it snows the goat sleeps .
-in winter it is snowing .
-when it rains the bird hides .
-in spring the bird is thirsty . it drinks .
-when it snows the dog plays in the snow .
-when it is windy the cow eats in the field .
-in summer dawa walks to the river .
-snow falls on the hill .
-the bird runs from the cat .
-who does the dog follow ? tashi .
-in spring dawa eats in the house .
-what does the cow do ? it eats .
-when it rains the cow is sleeping .
-the bird goes to the river . it drinks .
-who does the cat follow ? mina .
-in autumn it is windy .
-pema feeds the cow .
-when it is windy the dog runs on the hill .
-in summer dawa feeds the goat .
-when it snows the goat is sleeping .
-in winter dawa eats in the house .
-tashi has a dog . it plays .
-in summer dawa eats in the house .
-in winter tashi feeds the dog .
-in winter the dog runs on the hill .
 when it snows the goat sleeps in the house .
-the cat runs from the dog .
-dawa eats in the house .
+pema has a dog . it plays .
+in summer pema eats rice .
+the cat is hungry . mina feeds it .
+the wind is cold .
+the goat runs from the dog .
+tashi is playing the flute .
+when it rains the goat hides in the house .
+the wind blows in autumn .
+the cat chases the bird . it hides .
+in autumn dawa eats in the house .
+in winter the families drink butter tea .
+the goat is hungry . dawa feeds it .
+when it is sunny the cow eats .
+in summer dawa walks to the river .
+the cat chases the bird .
+the cat is chasing the bird .
+mina feeds the cat . she is happy .
+in winter pema drinks butter tea .
+who does the goat follow ? dawa .
+in summer dawa feeds the goat .
+when it snows the dog plays .
+when it snows the cat is sleeping .
 rain falls on the field .
-when it is windy the cat hides .
-clouds bring rain .
-in winter tashi plays with the dog .
-in summer the dog runs in the field .
-in winter the cat sleeps in the house .
-in spring dawa walks to the river .
-in summer pema feeds the cow .
-what does the bird do ? it sings .
-pema walks to the market .
-when it rains the goat is hiding .
-in autumn dawa walks to the river .
-in summer mina feeds the cat .
-dawa walks to the river .
+dawa is cooking in the house .
+in summer the cow eats in the field .
+who feeds the cow ? pema .
+when it is sunny the cow is eating .
+the goat goes to the river . it drinks .
+when it is windy the bird is hiding .
+in summer the families are drinking milk .
+when it snows the dog runs .
+when it snows the dog is playing .
+greens grow on the hill .
+who plays the drum ? dawa .
+when it is sunny the cat sleeps in the sun .
+in spring tashi plays with the dog .
+when it is sunny the dog runs in the field .
+the goat is following dawa .
+in autumn the cow eats in the field .
+in autumn tashi plays the flute .
+tashi feeds the dog . he is happy .
+when it is sunny the bird sings in the tree .
+when it is windy the dog runs .
+mina sings with the flute .
+in winter the cow sleeps in the house .
+dawa eats in the house .
+when it is sunny the bird sings .
+the cat is thirsty . it drinks .
+the sun is warm in summer .
+who chases the goat ? the dog .
+snow falls on the hill .
+in spring the cat is thirsty . it drinks .
+in winter pema walks to the market .
+in winter it is snowing .
+when it is sunny the dog is running .
+the cow gives milk .
+when it is windy the goat walks .
+in spring the families drink tea .
+tashi feeds the dog .
+tashi has a dog . it plays .
+momos are made with rice and greens .
+in winter dawa drinks butter tea .
+when it rains the cow is sleeping .
+tashi plays the flute .
+when it snows the bird hides in the tree .
+in summer the bird is thirsty . it drinks .
+in autumn dawa cooks momos .
+in summer the families drink milk .
+in winter mina feeds the cat .
+at the festival mina sings .
+in autumn dawa plays the drum .
+who cooks ? dawa .
 what is the weather in autumn ? it is windy .
-when it is sunny the cow eats in the field .
-the cow is thirsty . it drinks .
+the cat follows mina .
+in winter tashi drinks butter tea .
+the bird goes to the river . it drinks .
+mina feeds the cat .
+tashi has a flute . he plays it .
+in winter tashi feeds the dog .
+in winter the dog plays in the snow .
+in spring the goat is thirsty . it drinks .
+when it is sunny the goat is walking .
+in spring the cow is thirsty . it drinks .
+in winter the goat sleeps in the house .
+the flute is soft .
+in winter mina drinks butter tea .
+in spring the families eat greens .
+in winter it is snowy .
+the cow follows pema .
+in summer it is sunny .
+dawa cooks rice .
+in winter dawa eats in the house .
+in spring the dog plays in the rain .
+in summer tashi plays with the dog .
+when it snows the cow sleeps .
+when it snows the cat sleeps .
+in winter the families eat soup .
+what do the families drink in winter ? butter tea .
+in spring dawa walks to the river .
+the dog follows tashi .
+who does the cat follow ? mina .
+in autumn the dog runs on the hill .
+the goat follows dawa .
+in autumn the families have the festival .
+in winter mina sings in the field .
+mina sings in the field .
+at the festival the families are dancing .
+in winter the bird hides in the tree .
+rice grows in the field .
+dawa is playing the drum .
+when it is sunny the goat is eating .
+when it is windy the goat walks on the hill .
+the dog is following tashi .
+in summer dawa eats rice .
+when is the festival ? in autumn .
+in winter it snows .
+butter tea is warm .
+when it is sunny the dog plays by the river .
+the festival is in autumn .
+in summer the cow is thirsty . it drinks .
+in winter pema feeds the cow .
+in spring it is rainy .
+when it snows the families drink butter tea .
+at the festival the families dance in the field .
+the dog is hungry . tashi feeds it .
+when it rains the bird is hiding .
+in summer the cat sleeps in the sun .
+the goat gives milk .
+when it snows the goat sleeps .
+when it is windy the bird hides in the tree .
+when it is windy the cow eats in the field .
+the dog chases the goat .
+in summer pema walks to the market .
+in autumn pema walks to the market .
+the dog is thirsty . it drinks .
+what is the weather in winter ? it is snowy .
+when it is sunny the cat sleeps .
+the cow is following pema .
+the cat runs from the dog .
+the sky is cloudy .
+the soup is warm .
+in winter dawa cooks soup .
+in spring the families are drinking tea .
+the dog chases the cat .
+the dog is chasing the cat .
+the festival comes after the harvest .
+when it rains the dog is playing .
+when it is cold the families eat soup .
+when it snows the cow sleeps in the house .
+the river is cold in winter .
+dawa cooks soup .
+what does the bird do ? it sings .
+pema feeds the cow . she is happy .
+when it rains the bird hides in the tree .
+when it is windy the cat is hiding .
+the bird is thirsty . it drinks .
+in spring it is raining .
+when it is windy the cat hides in the house .
+the families eat momos in autumn .
+when it is windy the bird hides .
+in autumn dawa walks to the river .
+when it is sunny the cat is sleeping .
+at the festival the families light lamps .
+in autumn tashi plays with the dog .
+dawa cooks greens .
+what does the cow give ? milk .
+when it is sunny the goat eats on the hill .
+in autumn mina sings in the field .
+what does the cow do ? it eats .
+in spring the cat hides in the house .
+in spring the cow sleeps in the field .
+tashi plays with the dog .
+dawa goes to the house . he cooks .
+mina has a dog . it plays .
+when it is sunny the dog is playing .
+what do the families eat in autumn ? momos .
+in spring the goat hides in the house .
+the goat is thirsty . it drinks .
+the snow falls in winter .
+the drum is loud .
+in winter dawa feeds the goat .
+in summer the goat is thirsty . it drinks .
+when it is windy the cat hides .
+in spring mina sings in the field .
+butter comes from milk .
+when it is sunny the goat eats .
+in winter the families are drinking butter tea .
+who plays the flute ? tashi .
+in summer the dog is thirsty . it drinks .
+the cat is following mina .
+clouds bring rain .
+who chases the cat ? the dog .
+in winter tashi plays with the dog .
+in winter the cat sleeps in the house .
+at the festival the families drink butter tea .
+in summer pema feeds the cow .
+when it rains the cow sleeps .
+the families eat greens in spring .
+the cloud is here .
+when it rains the goat is hiding .
+the dog is chasing the goat .
+in summer mina feeds the cat .
+dawa plays the drum .
+in spring the bird hides in the tree .
+in spring the bird is thirsty . it drinks .
+at the festival pema dances .
+who feeds the goat ? dawa .
+in spring dawa eats in the house .
 when it is windy the dog is running .
+in summer mina eats rice .
 dawa feeds the goat .
 in summer tashi feeds the dog .
-in spring the goat is thirsty . it drinks .
-the wind is here .
+in autumn the families bring rice from the field .
+in spring the dog is thirsty . it drinks .
 in summer the dog plays by the river .
 when it snows the bird hides .
-mina sings in the field .
-when it snows the bird is hiding .
-when it is sunny the goat walks on the hill .
-when it is windy the cow eats .
-the goat is thirsty . it drinks .
-the sun is here .
-pema has a dog . it plays .
-when it is sunny the goat eats .
-the dog goes to the river . it drinks .
-the dog is following tashi .
-in winter dawa feeds the goat .
-when it snows the cat sleeps in the house .
-tashi feeds the dog . he is happy .
-the cloud is here .
 the snow is cold .
-in spring the cow sleeps in the field .
-the cow is following pema .
-what is the weather in winter ? it is snowy .
-when it is windy the goat walks .
-when it snows the dog is running .
-dawa feeds the goat . he is happy .
-in autumn mina sings in the field .
-in summer the cat is thirsty . it drinks .
-in autumn the dog runs on the hill .
-when it snows the dog runs on the hill .
-in autumn tashi plays with the dog .
-the dog chases the cat . it hides .
-when it is sunny the goat is walking .
-in summer the dog is thirsty . it drinks .
-in autumn the bird hides in the tree .
-the goat is following dawa .
-when it rains the cat is hiding .
-the sun is warm in summer .
-when it is sunny the cow eats .
-when it rains the cat hides in the house .
-the cat is following mina .
-in winter the cow sleeps in the house .
-when it snows the cow sleeps .
-who chases the cat ? the dog .
-who chases the goat ? the dog .
-the sky is cloudy .
-in spring the dog is thirsty . it drinks .
-the wind is cold .
+in summer mina sings in the field .
 who does the cow follow ? pema .
+when the drum plays the bird sings .
+who feeds the cat ? mina .
+when it is sunny the goat walks on the hill .
+at the festival tashi plays the flute .
+the milk is cold .
+when it is sunny the families drink milk .
 mina goes to the field . she sings .
-mina feeds the cat . she is happy .
-when it snows the cow is sleeping .
-when it rains the dog plays in the rain .
-the cat chases the bird . it hides .
-in spring the cat hides in the house .
-the goat runs from the dog .
-the cat follows mina .
-in summer the goat walks on the hill .
-when it snows the bird hides in the tree .
-in spring the goat hides in the house .
-the dog is chasing the goat .
-the cat goes to the river . it drinks .
-in summer the cow eats in the field .
-in winter the dog plays in the snow .
-when it snows the cat is sleeping .
-mina feeds the cat .
-in spring the dog plays in the rain .
-in spring the cat is thirsty . it drinks .
-when it is windy the cow is eating .
-in summer the goat eats on the hill .
-the goat follows dawa .
+in autumn the families are drinking tea .
+at the festival the families eat momos .
+the bird runs from the cat .
 who feeds the dog ? tashi .
-in spring the bird hides in the tree .
-in winter the goat sleeps in the house .
-in winter pema walks to the market .
-the dog is chasing the cat .
-when it rains the cow sleeps .
-when it is sunny the bird sings in the tree .
+when it rains the dog plays .
+when it snows the dog plays in the snow .
+the snow is here .
+when it is windy the goat is walking .
+when it snows the cat sleeps in the house .
+when it is windy the cow eats .
+the cow is hungry . pema feeds it .
+when it snows the goat is sleeping .
+when it is sunny the cow eats in the field .
+what is the weather in spring ? it is rainy .
+in summer the cat is thirsty . it drinks .
+when it is sunny the dog plays .
+in summer the goat walks on the hill .
+the cow goes to the river . it drinks .
+in summer the bird sings in the tree .
+the rain falls in spring .
+when it rains the dog plays in the rain .
+the cow is thirsty . it drinks .
+when it snows the bird is hiding .
+in autumn the bird hides in the tree .
+in autumn the families eat momos .
+who does the dog follow ? tashi .
+when it snows the dog runs on the hill .
+pema feeds the cow .
+when it rains the cat hides .
+in summer the families eat rice .
+in summer tashi eats rice .
+when it rains the bird hides .
+in summer the dog runs in the field .
+the dog goes to the river . it drinks .
+at the festival the dog runs in the field .
+in autumn the goat walks on the hill .
+in summer dawa eats in the house .
+when it snows the dog is running .
+dawa has a drum . he plays it .
+when it rains the cow sleeps in the field .
+in summer the goat eats on the hill .
+the rain is cold .
+when it is sunny the goat walks .
+pema walks to the market .

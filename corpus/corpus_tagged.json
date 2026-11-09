@@ -8,27 +8,97 @@
 ]
 ],
 [
-"the snow falls in winter .",
+"when it snows the goat sleeps in the house .",
 [
-"law",
-"roots"
+"category",
+"context",
+"law"
 ]
 ],
 [
-"the bird is thirsty . it drinks .",
+"pema has a dog . it plays .",
 [
 "reference"
 ]
 ],
 [
-"the dog chases the goat . it hides .",
+"in summer pema eats rice .",
+[
+"context",
+"food",
+"law"
+]
+],
+[
+"the cat is hungry . mina feeds it .",
 [
 "order",
 "reference"
 ]
 ],
 [
-"when it is sunny the dog runs .",
+"the wind is cold .",
+[
+"law"
+]
+],
+[
+"the goat runs from the dog .",
+[
+"order"
+]
+],
+[
+"tashi is playing the flute .",
+[
+"music",
+"order",
+"roots"
+]
+],
+[
+"when it rains the goat hides in the house .",
+[
+"category",
+"context",
+"law"
+]
+],
+[
+"the wind blows in autumn .",
+[
+"law"
+]
+],
+[
+"the cat chases the bird . it hides .",
+[
+"order",
+"reference"
+]
+],
+[
+"in autumn dawa eats in the house .",
+[
+"context"
+]
+],
+[
+"in winter the families drink butter tea .",
+[
+"food",
+"law"
+]
+],
+[
+"the goat is hungry . dawa feeds it .",
+[
+"order",
+"reference"
+]
+],
+[
+"when it is sunny the cow eats .",
 [
 "context",
 "law",
@@ -36,31 +106,175 @@
 ]
 ],
 [
-"when it is sunny the dog plays .",
+"in summer dawa walks to the river .",
 [
-"context",
-"law",
-"variants"
+"context"
 ]
 ],
 [
-"when it is sunny the goat walks .",
+"the cat chases the bird .",
 [
-"context",
-"law",
-"variants"
+"order"
 ]
 ],
 [
-"the dog is thirsty . it drinks .",
+"the cat is chasing the bird .",
+[
+"order",
+"roots"
+]
+],
+[
+"mina feeds the cat . she is happy .",
 [
 "reference"
 ]
 ],
 [
-"in spring it is raining .",
+"in winter pema drinks butter tea .",
+[
+"context",
+"food",
+"law"
+]
+],
+[
+"who does the goat follow ? dawa .",
+[
+"question"
+]
+],
+[
+"in summer dawa feeds the goat .",
+[
+"context",
+"order"
+]
+],
+[
+"when it snows the dog plays .",
+[
+"context",
+"law",
+"variants"
+]
+],
+[
+"when it snows the cat is sleeping .",
 [
 "law",
+"roots"
+]
+],
+[
+"rain falls on the field .",
+[
+"law"
+]
+],
+[
+"dawa is cooking in the house .",
+[
+"roots",
+"skew"
+]
+],
+[
+"in summer the cow eats in the field .",
+[
+"category",
+"context",
+"law"
+]
+],
+[
+"who feeds the cow ? pema .",
+[
+"question"
+]
+],
+[
+"when it is sunny the cow is eating .",
+[
+"law",
+"roots"
+]
+],
+[
+"the goat goes to the river . it drinks .",
+[
+"reference"
+]
+],
+[
+"when it is windy the bird is hiding .",
+[
+"law",
+"roots"
+]
+],
+[
+"in summer the families are drinking milk .",
+[
+"food",
+"law",
+"roots"
+]
+],
+[
+"when it snows the dog runs .",
+[
+"context",
+"law",
+"variants"
+]
+],
+[
+"when it snows the dog is playing .",
+[
+"law",
+"roots"
+]
+],
+[
+"greens grow on the hill .",
+[
+"food",
+"law"
+]
+],
+[
+"who plays the drum ? dawa .",
+[
+"question"
+]
+],
+[
+"when it is sunny the cat sleeps in the sun .",
+[
+"category",
+"context",
+"law"
+]
+],
+[
+"in spring tashi plays with the dog .",
+[
+"context"
+]
+],
+[
+"when it is sunny the dog runs in the field .",
+[
+"category",
+"context",
+"law"
+]
+],
+[
+"the goat is following dawa .",
+[
+"order",
 "roots"
 ]
 ],
@@ -73,7 +287,20 @@
 ]
 ],
 [
-"in winter the bird hides in the tree .",
+"in autumn tashi plays the flute .",
+[
+"context",
+"music"
+]
+],
+[
+"tashi feeds the dog . he is happy .",
+[
+"reference"
+]
+],
+[
+"when it is sunny the bird sings in the tree .",
 [
 "category",
 "context",
@@ -81,16 +308,275 @@
 ]
 ],
 [
-"in spring it rains .",
+"when it is windy the dog runs .",
+[
+"context",
+"law",
+"variants"
+]
+],
+[
+"mina sings with the flute .",
+[
+"music"
+]
+],
+[
+"in winter the cow sleeps in the house .",
+[
+"category",
+"context",
+"law"
+]
+],
+[
+"dawa eats in the house .",
+[
+"category"
+]
+],
+[
+"when it is sunny the bird sings .",
+[
+"context",
+"law",
+"variants"
+]
+],
+[
+"the cat is thirsty . it drinks .",
+[
+"reference"
+]
+],
+[
+"the sun is warm in summer .",
+[
+"law"
+]
+],
+[
+"who chases the goat ? the dog .",
+[
+"question"
+]
+],
+[
+"snow falls on the hill .",
+[
+"law"
+]
+],
+[
+"in spring the cat is thirsty . it drinks .",
+[
+"context",
+"reference"
+]
+],
+[
+"in winter pema walks to the market .",
+[
+"context"
+]
+],
+[
+"in winter it is snowing .",
 [
 "law",
 "roots"
 ]
 ],
 [
-"the rain is here .",
+"when it is sunny the dog is running .",
+[
+"law",
+"roots"
+]
+],
+[
+"the cow gives milk .",
+[
+"food",
+"law"
+]
+],
+[
+"when it is windy the goat walks .",
+[
+"context",
+"law",
+"variants"
+]
+],
+[
+"in spring the families drink tea .",
+[
+"food",
+"law"
+]
+],
+[
+"tashi feeds the dog .",
+[
+"order"
+]
+],
+[
+"tashi has a dog . it plays .",
+[
+"reference"
+]
+],
+[
+"momos are made with rice and greens .",
+[
+"food",
+"law"
+]
+],
+[
+"in winter dawa drinks butter tea .",
+[
+"context",
+"food",
+"law"
+]
+],
+[
+"when it rains the cow is sleeping .",
+[
+"law",
+"roots"
+]
+],
+[
+"tashi plays the flute .",
+[
+"music",
+"order"
+]
+],
+[
+"when it snows the bird hides in the tree .",
 [
 "category",
+"context",
+"law"
+]
+],
+[
+"in summer the bird is thirsty . it drinks .",
+[
+"context",
+"reference"
+]
+],
+[
+"in autumn dawa cooks momos .",
+[
+"context",
+"food",
+"skew"
+]
+],
+[
+"in summer the families drink milk .",
+[
+"food",
+"law"
+]
+],
+[
+"in winter mina feeds the cat .",
+[
+"context",
+"order"
+]
+],
+[
+"at the festival mina sings .",
+[
+"music"
+]
+],
+[
+"in autumn dawa plays the drum .",
+[
+"context",
+"music"
+]
+],
+[
+"who cooks ? dawa .",
+[
+"question"
+]
+],
+[
+"what is the weather in autumn ? it is windy .",
+[
+"question"
+]
+],
+[
+"the cat follows mina .",
+[
+"order"
+]
+],
+[
+"in winter tashi drinks butter tea .",
+[
+"context",
+"food",
+"law"
+]
+],
+[
+"the bird goes to the river . it drinks .",
+[
+"reference"
+]
+],
+[
+"mina feeds the cat .",
+[
+"order"
+]
+],
+[
+"tashi has a flute . he plays it .",
+[
+"music"
+]
+],
+[
+"in winter tashi feeds the dog .",
+[
+"context",
+"order"
+]
+],
+[
+"in winter the dog plays in the snow .",
+[
+"category",
+"context",
+"law"
+]
+],
+[
+"in spring the goat is thirsty . it drinks .",
+[
+"context",
+"reference"
+]
+],
+[
+"when it is sunny the goat is walking .",
+[
+"law",
 "roots"
 ]
 ],
@@ -102,15 +588,44 @@
 ]
 ],
 [
-"the cat chases the bird .",
+"in winter the goat sleeps in the house .",
 [
-"order"
+"category",
+"context",
+"law"
 ]
 ],
 [
-"in spring pema walks to the market .",
+"the flute is soft .",
 [
-"context"
+"music"
+]
+],
+[
+"in winter mina drinks butter tea .",
+[
+"context",
+"food",
+"law"
+]
+],
+[
+"in spring the families eat greens .",
+[
+"food",
+"law"
+]
+],
+[
+"in winter it is snowy .",
+[
+"law"
+]
+],
+[
+"the cow follows pema .",
+[
+"order"
 ]
 ],
 [
@@ -120,28 +635,20 @@
 ]
 ],
 [
-"when it rains the goat hides in the house .",
+"dawa cooks rice .",
 [
-"category",
-"context",
-"law"
+"food",
+"skew"
 ]
 ],
 [
-"the dog is hungry . tashi feeds it .",
+"in winter dawa eats in the house .",
 [
-"order",
-"reference"
+"context"
 ]
 ],
 [
-"what is the weather in spring ? it is rainy .",
-[
-"question"
-]
-],
-[
-"in summer the bird sings in the tree .",
+"in spring the dog plays in the rain .",
 [
 "category",
 "context",
@@ -155,214 +662,7 @@
 ]
 ],
 [
-"when it snows the dog runs .",
-[
-"context",
-"law",
-"variants"
-]
-],
-[
-"when it is sunny the dog is running .",
-[
-"law",
-"roots"
-]
-],
-[
-"in spring it is rainy .",
-[
-"law"
-]
-],
-[
-"when it rains the bird hides in the tree .",
-[
-"category",
-"context",
-"law"
-]
-],
-[
-"when it rains the goat hides .",
-[
-"context",
-"law",
-"variants"
-]
-],
-[
-"when it is windy the goat is walking .",
-[
-"law",
-"roots"
-]
-],
-[
-"when it rains the dog plays .",
-[
-"context",
-"law",
-"variants"
-]
-],
-[
-"the snow is here .",
-[
-"category",
-"roots"
-]
-],
-[
-"the goat goes to the river . it drinks .",
-[
-"reference"
-]
-],
-[
-"pema feeds the cow . she is happy .",
-[
-"reference"
-]
-],
-[
-"the cat is chasing the bird .",
-[
-"order",
-"roots"
-]
-],
-[
-"who feeds the cow ? pema .",
-[
-"question"
-]
-],
-[
-"when it is windy the dog runs .",
-[
-"context",
-"law",
-"variants"
-]
-],
-[
-"the cow is hungry . pema feeds it .",
-[
-"order",
-"reference"
-]
-],
-[
-"in winter mina sings in the field .",
-[
-"context"
-]
-],
-[
-"who feeds the cat ? mina .",
-[
-"question"
-]
-],
-[
-"in winter it is snowy .",
-[
-"law"
-]
-],
-[
-"the rain is cold .",
-[
-"law",
-"roots"
-]
-],
-[
-"when it is windy the cat is hiding .",
-[
-"law",
-"roots"
-]
-],
-[
-"the rain falls in spring .",
-[
-"law",
-"roots"
-]
-],
-[
-"in summer the cow is thirsty . it drinks .",
-[
-"context",
-"reference"
-]
-],
-[
-"in winter it snows .",
-[
-"law",
-"roots"
-]
-],
-[
-"when it is sunny the dog plays by the river .",
-[
-"category",
-"context",
-"law"
-]
-],
-[
-"when it is sunny the cat is sleeping .",
-[
-"law",
-"roots"
-]
-],
-[
-"when it is sunny the cat sleeps .",
-[
-"context",
-"law",
-"variants"
-]
-],
-[
-"who feeds the goat ? dawa .",
-[
-"question"
-]
-],
-[
-"in spring tashi plays with the dog .",
-[
-"context"
-]
-],
-[
-"the cow follows pema .",
-[
-"order"
-]
-],
-[
-"in autumn the goat walks on the hill .",
-[
-"category",
-"context",
-"law"
-]
-],
-[
-"tashi plays with the dog .",
-[
-"category"
-]
-],
-[
-"when it is windy the bird hides .",
+"when it snows the cow sleeps .",
 [
 "context",
 "law",
@@ -378,10 +678,97 @@
 ]
 ],
 [
-"in winter mina feeds the cat .",
+"in winter the families eat soup .",
 [
-"context",
+"food",
+"law"
+]
+],
+[
+"what do the families drink in winter ? butter tea .",
+[
+"question"
+]
+],
+[
+"in spring dawa walks to the river .",
+[
+"context"
+]
+],
+[
+"the dog follows tashi .",
+[
 "order"
+]
+],
+[
+"who does the cat follow ? mina .",
+[
+"question"
+]
+],
+[
+"in autumn the dog runs on the hill .",
+[
+"category",
+"context",
+"law"
+]
+],
+[
+"the goat follows dawa .",
+[
+"order"
+]
+],
+[
+"in autumn the families have the festival .",
+[
+"festival",
+"law"
+]
+],
+[
+"in winter mina sings in the field .",
+[
+"context"
+]
+],
+[
+"mina sings in the field .",
+[
+"category"
+]
+],
+[
+"at the festival the families are dancing .",
+[
+"festival",
+"law"
+]
+],
+[
+"in winter the bird hides in the tree .",
+[
+"category",
+"context",
+"law"
+]
+],
+[
+"rice grows in the field .",
+[
+"food",
+"law"
+]
+],
+[
+"dawa is playing the drum .",
+[
+"music",
+"order",
+"roots"
 ]
 ],
 [
@@ -389,63 +776,6 @@
 [
 "law",
 "roots"
-]
-],
-[
-"when it snows the cow sleeps in the house .",
-[
-"category",
-"context",
-"law"
-]
-],
-[
-"the wind blows in autumn .",
-[
-"law"
-]
-],
-[
-"when it rains the cat hides .",
-[
-"context",
-"law",
-"variants"
-]
-],
-[
-"when it is sunny the cat sleeps in the sun .",
-[
-"category",
-"context",
-"law"
-]
-],
-[
-"when it snows the dog is playing .",
-[
-"law",
-"roots"
-]
-],
-[
-"the dog chases the goat .",
-[
-"order"
-]
-],
-[
-"when it is windy the bird hides in the tree .",
-[
-"category",
-"context",
-"law"
-]
-],
-[
-"tashi feeds the dog .",
-[
-"order"
 ]
 ],
 [
@@ -457,41 +787,42 @@
 ]
 ],
 [
-"when it is windy the cat hides in the house .",
+"the dog is following tashi .",
 [
-"category",
+"order",
+"roots"
+]
+],
+[
+"in summer dawa eats rice .",
+[
 "context",
+"food",
 "law"
 ]
 ],
 [
-"when it snows the dog plays .",
+"when is the festival ? in autumn .",
 [
-"context",
+"question"
+]
+],
+[
+"in winter it snows .",
+[
 "law",
-"variants"
+"roots"
 ]
 ],
 [
-"the sun is warm .",
+"butter tea is warm .",
 [
+"food",
 "law"
 ]
 ],
 [
-"who chases the bird ? the cat .",
-[
-"question"
-]
-],
-[
-"dawa has a dog . it plays .",
-[
-"reference"
-]
-],
-[
-"in autumn the cat hides in the house .",
+"when it is sunny the dog plays by the river .",
 [
 "category",
 "context",
@@ -499,28 +830,58 @@
 ]
 ],
 [
-"in spring mina sings in the field .",
+"the festival is in autumn .",
 [
-"context"
+"festival",
+"law"
 ]
 ],
 [
-"in summer the goat is thirsty . it drinks .",
+"in summer the cow is thirsty . it drinks .",
 [
 "context",
 "reference"
 ]
 ],
 [
-"who does the goat follow ? dawa .",
+"in winter pema feeds the cow .",
 [
-"question"
+"context",
+"order"
 ]
 ],
 [
-"in summer mina sings in the field .",
+"in spring it is rainy .",
 [
-"context"
+"law"
+]
+],
+[
+"when it snows the families drink butter tea .",
+[
+"food",
+"law"
+]
+],
+[
+"at the festival the families dance in the field .",
+[
+"festival",
+"law"
+]
+],
+[
+"the dog is hungry . tashi feeds it .",
+[
+"order",
+"reference"
+]
+],
+[
+"when it rains the bird is hiding .",
+[
+"law",
+"roots"
 ]
 ],
 [
@@ -532,10 +893,10 @@
 ]
 ],
 [
-"when it rains the bird is hiding .",
+"the goat gives milk .",
 [
-"law",
-"roots"
+"food",
+"law"
 ]
 ],
 [
@@ -547,29 +908,7 @@
 ]
 ],
 [
-"in winter it is snowing .",
-[
-"law",
-"roots"
-]
-],
-[
-"when it rains the bird hides .",
-[
-"context",
-"law",
-"variants"
-]
-],
-[
-"in spring the bird is thirsty . it drinks .",
-[
-"context",
-"reference"
-]
-],
-[
-"when it snows the dog plays in the snow .",
+"when it is windy the bird hides in the tree .",
 [
 "category",
 "context",
@@ -585,31 +924,252 @@
 ]
 ],
 [
-"in summer dawa walks to the river .",
-[
-"context"
-]
-],
-[
-"snow falls on the hill .",
-[
-"law"
-]
-],
-[
-"the bird runs from the cat .",
+"the dog chases the goat .",
 [
 "order"
 ]
 ],
 [
-"who does the dog follow ? tashi .",
+"in summer pema walks to the market .",
+[
+"context"
+]
+],
+[
+"in autumn pema walks to the market .",
+[
+"context"
+]
+],
+[
+"the dog is thirsty . it drinks .",
+[
+"reference"
+]
+],
+[
+"what is the weather in winter ? it is snowy .",
 [
 "question"
 ]
 ],
 [
-"in spring dawa eats in the house .",
+"when it is sunny the cat sleeps .",
+[
+"context",
+"law",
+"variants"
+]
+],
+[
+"the cow is following pema .",
+[
+"order",
+"roots"
+]
+],
+[
+"the cat runs from the dog .",
+[
+"order"
+]
+],
+[
+"the sky is cloudy .",
+[
+"roots"
+]
+],
+[
+"the soup is warm .",
+[
+"food",
+"law"
+]
+],
+[
+"in winter dawa cooks soup .",
+[
+"context",
+"food",
+"skew"
+]
+],
+[
+"in spring the families are drinking tea .",
+[
+"food",
+"law",
+"roots"
+]
+],
+[
+"the dog chases the cat .",
+[
+"order"
+]
+],
+[
+"the dog is chasing the cat .",
+[
+"order",
+"roots"
+]
+],
+[
+"the festival comes after the harvest .",
+[
+"festival",
+"law"
+]
+],
+[
+"when it rains the dog is playing .",
+[
+"law",
+"roots"
+]
+],
+[
+"when it is cold the families eat soup .",
+[
+"food",
+"law"
+]
+],
+[
+"when it snows the cow sleeps in the house .",
+[
+"category",
+"context",
+"law"
+]
+],
+[
+"the river is cold in winter .",
+[
+"law"
+]
+],
+[
+"dawa cooks soup .",
+[
+"food",
+"skew"
+]
+],
+[
+"what does the bird do ? it sings .",
+[
+"question"
+]
+],
+[
+"pema feeds the cow . she is happy .",
+[
+"reference"
+]
+],
+[
+"when it rains the bird hides in the tree .",
+[
+"category",
+"context",
+"law"
+]
+],
+[
+"when it is windy the cat is hiding .",
+[
+"law",
+"roots"
+]
+],
+[
+"the bird is thirsty . it drinks .",
+[
+"reference"
+]
+],
+[
+"in spring it is raining .",
+[
+"law",
+"roots"
+]
+],
+[
+"when it is windy the cat hides in the house .",
+[
+"category",
+"context",
+"law"
+]
+],
+[
+"the families eat momos in autumn .",
+[
+"food",
+"law"
+]
+],
+[
+"when it is windy the bird hides .",
+[
+"context",
+"law",
+"variants"
+]
+],
+[
+"in autumn dawa walks to the river .",
+[
+"context"
+]
+],
+[
+"when it is sunny the cat is sleeping .",
+[
+"law",
+"roots"
+]
+],
+[
+"at the festival the families light lamps .",
+[
+"festival",
+"law"
+]
+],
+[
+"in autumn tashi plays with the dog .",
+[
+"context"
+]
+],
+[
+"dawa cooks greens .",
+[
+"food",
+"skew"
+]
+],
+[
+"what does the cow give ? milk .",
+[
+"question"
+]
+],
+[
+"when it is sunny the goat eats on the hill .",
+[
+"category",
+"context",
+"law"
+]
+],
+[
+"in autumn mina sings in the field .",
 [
 "context"
 ]
@@ -621,38 +1181,7 @@
 ]
 ],
 [
-"when it rains the cow is sleeping .",
-[
-"law",
-"roots"
-]
-],
-[
-"the bird goes to the river . it drinks .",
-[
-"reference"
-]
-],
-[
-"who does the cat follow ? mina .",
-[
-"question"
-]
-],
-[
-"in autumn it is windy .",
-[
-"law"
-]
-],
-[
-"pema feeds the cow .",
-[
-"order"
-]
-],
-[
-"when it is windy the dog runs on the hill .",
+"in spring the cat hides in the house .",
 [
 "category",
 "context",
@@ -660,46 +1189,7 @@
 ]
 ],
 [
-"in summer dawa feeds the goat .",
-[
-"context",
-"order"
-]
-],
-[
-"when it snows the goat is sleeping .",
-[
-"law",
-"roots"
-]
-],
-[
-"in winter dawa eats in the house .",
-[
-"context"
-]
-],
-[
-"tashi has a dog . it plays .",
-[
-"reference"
-]
-],
-[
-"in summer dawa eats in the house .",
-[
-"context"
-]
-],
-[
-"in winter tashi feeds the dog .",
-[
-"context",
-"order"
-]
-],
-[
-"in winter the dog runs on the hill .",
+"in spring the cow sleeps in the field .",
 [
 "category",
 "context",
@@ -707,29 +1197,76 @@
 ]
 ],
 [
-"when it snows the goat sleeps in the house .",
-[
-"category",
-"context",
-"law"
-]
-],
-[
-"the cat runs from the dog .",
-[
-"order"
-]
-],
-[
-"dawa eats in the house .",
+"tashi plays with the dog .",
 [
 "category"
 ]
 ],
 [
-"rain falls on the field .",
+"dawa goes to the house . he cooks .",
 [
+"reference",
+"skew"
+]
+],
+[
+"mina has a dog . it plays .",
+[
+"reference"
+]
+],
+[
+"when it is sunny the dog is playing .",
+[
+"law",
+"roots"
+]
+],
+[
+"what do the families eat in autumn ? momos .",
+[
+"question"
+]
+],
+[
+"in spring the goat hides in the house .",
+[
+"category",
+"context",
 "law"
+]
+],
+[
+"the goat is thirsty . it drinks .",
+[
+"reference"
+]
+],
+[
+"the snow falls in winter .",
+[
+"law",
+"roots"
+]
+],
+[
+"the drum is loud .",
+[
+"music"
+]
+],
+[
+"in winter dawa feeds the goat .",
+[
+"context",
+"order"
+]
+],
+[
+"in summer the goat is thirsty . it drinks .",
+[
+"context",
+"reference"
 ]
 ],
 [
@@ -741,6 +1278,55 @@
 ]
 ],
 [
+"in spring mina sings in the field .",
+[
+"context"
+]
+],
+[
+"butter comes from milk .",
+[
+"food",
+"law"
+]
+],
+[
+"when it is sunny the goat eats .",
+[
+"context",
+"law",
+"variants"
+]
+],
+[
+"in winter the families are drinking butter tea .",
+[
+"food",
+"law",
+"roots"
+]
+],
+[
+"who plays the flute ? tashi .",
+[
+"question"
+]
+],
+[
+"in summer the dog is thirsty . it drinks .",
+[
+"context",
+"reference"
+]
+],
+[
+"the cat is following mina .",
+[
+"order",
+"roots"
+]
+],
+[
 "clouds bring rain .",
 [
 "law",
@@ -748,17 +1334,15 @@
 ]
 ],
 [
-"in winter tashi plays with the dog .",
+"who chases the cat ? the dog .",
 [
-"context"
+"question"
 ]
 ],
 [
-"in summer the dog runs in the field .",
+"in winter tashi plays with the dog .",
 [
-"category",
-"context",
-"law"
+"context"
 ]
 ],
 [
@@ -770,9 +1354,10 @@
 ]
 ],
 [
-"in spring dawa walks to the river .",
+"at the festival the families drink butter tea .",
 [
-"context"
+"festival",
+"law"
 ]
 ],
 [
@@ -783,15 +1368,25 @@
 ]
 ],
 [
-"what does the bird do ? it sings .",
+"when it rains the cow sleeps .",
 [
-"question"
+"context",
+"law",
+"variants"
 ]
 ],
 [
-"pema walks to the market .",
+"the families eat greens in spring .",
 [
-"category"
+"food",
+"law"
+]
+],
+[
+"the cloud is here .",
+[
+"category",
+"roots"
 ]
 ],
 [
@@ -802,9 +1397,10 @@
 ]
 ],
 [
-"in autumn dawa walks to the river .",
+"the dog is chasing the goat .",
 [
-"context"
+"order",
+"roots"
 ]
 ],
 [
@@ -815,19 +1411,14 @@
 ]
 ],
 [
-"dawa walks to the river .",
+"dawa plays the drum .",
 [
-"category"
+"music",
+"order"
 ]
 ],
 [
-"what is the weather in autumn ? it is windy .",
-[
-"question"
-]
-],
-[
-"when it is sunny the cow eats in the field .",
+"in spring the bird hides in the tree .",
 [
 "category",
 "context",
@@ -835,9 +1426,28 @@
 ]
 ],
 [
-"the cow is thirsty . it drinks .",
+"in spring the bird is thirsty . it drinks .",
 [
+"context",
 "reference"
+]
+],
+[
+"at the festival pema dances .",
+[
+"music"
+]
+],
+[
+"who feeds the goat ? dawa .",
+[
+"question"
+]
+],
+[
+"in spring dawa eats in the house .",
+[
+"context"
 ]
 ],
 [
@@ -845,6 +1455,14 @@
 [
 "law",
 "roots"
+]
+],
+[
+"in summer mina eats rice .",
+[
+"context",
+"food",
+"law"
 ]
 ],
 [
@@ -861,17 +1479,17 @@
 ]
 ],
 [
-"in spring the goat is thirsty . it drinks .",
+"in autumn the families bring rice from the field .",
 [
-"context",
-"reference"
+"festival",
+"law"
 ]
 ],
 [
-"the wind is here .",
+"in spring the dog is thirsty . it drinks .",
 [
-"category",
-"roots"
+"context",
+"reference"
 ]
 ],
 [
@@ -891,20 +1509,130 @@
 ]
 ],
 [
-"mina sings in the field .",
+"the snow is cold .",
 [
-"category"
+"law"
 ]
 ],
 [
-"when it snows the bird is hiding .",
+"in summer mina sings in the field .",
+[
+"context"
+]
+],
+[
+"who does the cow follow ? pema .",
+[
+"question"
+]
+],
+[
+"when the drum plays the bird sings .",
+[
+"music"
+]
+],
+[
+"who feeds the cat ? mina .",
+[
+"question"
+]
+],
+[
+"when it is sunny the goat walks on the hill .",
+[
+"category",
+"context",
+"law"
+]
+],
+[
+"at the festival tashi plays the flute .",
+[
+"context",
+"festival",
+"music"
+]
+],
+[
+"the milk is cold .",
+[
+"food",
+"law"
+]
+],
+[
+"when it is sunny the families drink milk .",
+[
+"food",
+"law"
+]
+],
+[
+"mina goes to the field . she sings .",
+[
+"reference"
+]
+],
+[
+"in autumn the families are drinking tea .",
+[
+"food",
+"law",
+"roots"
+]
+],
+[
+"at the festival the families eat momos .",
+[
+"festival",
+"law"
+]
+],
+[
+"the bird runs from the cat .",
+[
+"order"
+]
+],
+[
+"who feeds the dog ? tashi .",
+[
+"question"
+]
+],
+[
+"when it rains the dog plays .",
+[
+"context",
+"law",
+"variants"
+]
+],
+[
+"when it snows the dog plays in the snow .",
+[
+"category",
+"context",
+"law"
+]
+],
+[
+"the snow is here .",
+[
+"category",
+"roots"
+]
+],
+[
+"when it is windy the goat is walking .",
 [
 "law",
 "roots"
 ]
 ],
 [
-"when it is sunny the goat walks on the hill .",
+"when it snows the cat sleeps in the house .",
 [
 "category",
 "context",
@@ -920,54 +1648,21 @@
 ]
 ],
 [
-"the goat is thirsty . it drinks .",
+"the cow is hungry . pema feeds it .",
 [
+"order",
 "reference"
 ]
 ],
 [
-"the sun is here .",
+"when it snows the goat is sleeping .",
 [
-"category",
-"roots"
-]
-],
-[
-"pema has a dog . it plays .",
-[
-"reference"
-]
-],
-[
-"when it is sunny the goat eats .",
-[
-"context",
 "law",
-"variants"
-]
-],
-[
-"the dog goes to the river . it drinks .",
-[
-"reference"
-]
-],
-[
-"the dog is following tashi .",
-[
-"order",
 "roots"
 ]
 ],
 [
-"in winter dawa feeds the goat .",
-[
-"context",
-"order"
-]
-],
-[
-"when it snows the cat sleeps in the house .",
+"when it is sunny the cow eats in the field .",
 [
 "category",
 "context",
@@ -975,70 +1670,9 @@
 ]
 ],
 [
-"tashi feeds the dog . he is happy .",
-[
-"reference"
-]
-],
-[
-"the cloud is here .",
-[
-"category",
-"roots"
-]
-],
-[
-"the snow is cold .",
-[
-"law"
-]
-],
-[
-"in spring the cow sleeps in the field .",
-[
-"category",
-"context",
-"law"
-]
-],
-[
-"the cow is following pema .",
-[
-"order",
-"roots"
-]
-],
-[
-"what is the weather in winter ? it is snowy .",
+"what is the weather in spring ? it is rainy .",
 [
 "question"
-]
-],
-[
-"when it is windy the goat walks .",
-[
-"context",
-"law",
-"variants"
-]
-],
-[
-"when it snows the dog is running .",
-[
-"law",
-"roots"
-]
-],
-[
-"dawa feeds the goat . he is happy .",
-[
-"reference"
-]
-],
-[
-"in autumn mina sings in the field .",
-[
-"context"
 ]
 ],
 [
@@ -1049,78 +1683,7 @@
 ]
 ],
 [
-"in autumn the dog runs on the hill .",
-[
-"category",
-"context",
-"law"
-]
-],
-[
-"when it snows the dog runs on the hill .",
-[
-"category",
-"context",
-"law"
-]
-],
-[
-"in autumn tashi plays with the dog .",
-[
-"context"
-]
-],
-[
-"the dog chases the cat . it hides .",
-[
-"order",
-"reference"
-]
-],
-[
-"when it is sunny the goat is walking .",
-[
-"law",
-"roots"
-]
-],
-[
-"in summer the dog is thirsty . it drinks .",
-[
-"context",
-"reference"
-]
-],
-[
-"in autumn the bird hides in the tree .",
-[
-"category",
-"context",
-"law"
-]
-],
-[
-"the goat is following dawa .",
-[
-"order",
-"roots"
-]
-],
-[
-"when it rains the cat is hiding .",
-[
-"law",
-"roots"
-]
-],
-[
-"the sun is warm in summer .",
-[
-"law"
-]
-],
-[
-"when it is sunny the cow eats .",
+"when it is sunny the dog plays .",
 [
 "context",
 "law",
@@ -1128,7 +1691,7 @@
 ]
 ],
 [
-"when it rains the cat hides in the house .",
+"in summer the goat walks on the hill .",
 [
 "category",
 "context",
@@ -1136,14 +1699,13 @@
 ]
 ],
 [
-"the cat is following mina .",
+"the cow goes to the river . it drinks .",
 [
-"order",
-"roots"
+"reference"
 ]
 ],
 [
-"in winter the cow sleeps in the house .",
+"in summer the bird sings in the tree .",
 [
 "category",
 "context",
@@ -1151,64 +1713,7 @@
 ]
 ],
 [
-"when it snows the cow sleeps .",
-[
-"context",
-"law",
-"variants"
-]
-],
-[
-"who chases the cat ? the dog .",
-[
-"question"
-]
-],
-[
-"who chases the goat ? the dog .",
-[
-"question"
-]
-],
-[
-"the sky is cloudy .",
-[
-"roots"
-]
-],
-[
-"in spring the dog is thirsty . it drinks .",
-[
-"context",
-"reference"
-]
-],
-[
-"the wind is cold .",
-[
-"law"
-]
-],
-[
-"who does the cow follow ? pema .",
-[
-"question"
-]
-],
-[
-"mina goes to the field . she sings .",
-[
-"reference"
-]
-],
-[
-"mina feeds the cat . she is happy .",
-[
-"reference"
-]
-],
-[
-"when it snows the cow is sleeping .",
+"the rain falls in spring .",
 [
 "law",
 "roots"
@@ -1223,100 +1728,20 @@
 ]
 ],
 [
-"the cat chases the bird . it hides .",
-[
-"order",
-"reference"
-]
-],
-[
-"in spring the cat hides in the house .",
-[
-"category",
-"context",
-"law"
-]
-],
-[
-"the goat runs from the dog .",
-[
-"order"
-]
-],
-[
-"the cat follows mina .",
-[
-"order"
-]
-],
-[
-"in summer the goat walks on the hill .",
-[
-"category",
-"context",
-"law"
-]
-],
-[
-"when it snows the bird hides in the tree .",
-[
-"category",
-"context",
-"law"
-]
-],
-[
-"in spring the goat hides in the house .",
-[
-"category",
-"context",
-"law"
-]
-],
-[
-"the dog is chasing the goat .",
-[
-"order",
-"roots"
-]
-],
-[
-"the cat goes to the river . it drinks .",
+"the cow is thirsty . it drinks .",
 [
 "reference"
 ]
 ],
 [
-"in summer the cow eats in the field .",
-[
-"category",
-"context",
-"law"
-]
-],
-[
-"in winter the dog plays in the snow .",
-[
-"category",
-"context",
-"law"
-]
-],
-[
-"when it snows the cat is sleeping .",
+"when it snows the bird is hiding .",
 [
 "law",
 "roots"
 ]
 ],
 [
-"mina feeds the cat .",
-[
-"order"
-]
-],
-[
-"in spring the dog plays in the rain .",
+"in autumn the bird hides in the tree .",
 [
 "category",
 "context",
@@ -1324,41 +1749,20 @@
 ]
 ],
 [
-"in spring the cat is thirsty . it drinks .",
+"in autumn the families eat momos .",
 [
-"context",
-"reference"
-]
-],
-[
-"when it is windy the cow is eating .",
-[
-"law",
-"roots"
-]
-],
-[
-"in summer the goat eats on the hill .",
-[
-"category",
-"context",
+"food",
 "law"
 ]
 ],
 [
-"the goat follows dawa .",
-[
-"order"
-]
-],
-[
-"who feeds the dog ? tashi .",
+"who does the dog follow ? tashi .",
 [
 "question"
 ]
 ],
 [
-"in spring the bird hides in the tree .",
+"when it snows the dog runs on the hill .",
 [
 "category",
 "context",
@@ -1366,28 +1770,13 @@
 ]
 ],
 [
-"in winter the goat sleeps in the house .",
+"pema feeds the cow .",
 [
-"category",
-"context",
-"law"
+"order"
 ]
 ],
 [
-"in winter pema walks to the market .",
-[
-"context"
-]
-],
-[
-"the dog is chasing the cat .",
-[
-"order",
-"roots"
-]
-],
-[
-"when it rains the cow sleeps .",
+"when it rains the cat hides .",
 [
 "context",
 "law",
@@ -1395,17 +1784,51 @@
 ]
 ],
 [
-"when it is sunny the bird sings in the tree .",
+"in summer the families eat rice .",
+[
+"food",
+"law"
+]
+],
+[
+"in summer tashi eats rice .",
+[
+"context",
+"food",
+"law"
+]
+],
+[
+"when it rains the bird hides .",
+[
+"context",
+"law",
+"variants"
+]
+],
+[
+"in summer the dog runs in the field .",
 [
 "category",
 "context",
 "law"
 ]
+],
+[
+"the dog goes to the river . it drinks .",
+[
+"reference"
 ]
 ],
-"held": [
 [
-"when it is sunny the dog runs in the field .",
+"at the festival the dog runs in the field .",
+[
+"context",
+"festival"
+]
+],
+[
+"in autumn the goat walks on the hill .",
 [
 "category",
 "context",
@@ -1413,69 +1836,22 @@
 ]
 ],
 [
-"in autumn pema walks to the market .",
+"in summer dawa eats in the house .",
 [
 "context"
 ]
 ],
 [
-"the cat is hungry . mina feeds it .",
-[
-"order",
-"reference"
-]
-],
-[
-"the goat is hungry . dawa feeds it .",
-[
-"order",
-"reference"
-]
-],
-[
-"the river is cold in winter .",
-[
-"law"
-]
-],
-[
-"when it is sunny the cow is eating .",
+"when it snows the dog is running .",
 [
 "law",
 "roots"
 ]
 ],
 [
-"in autumn dawa eats in the house .",
+"dawa has a drum . he plays it .",
 [
-"context"
-]
-],
-[
-"in winter pema feeds the cow .",
-[
-"context",
-"order"
-]
-],
-[
-"the cow goes to the river . it drinks .",
-[
-"reference"
-]
-],
-[
-"in summer the bird is thirsty . it drinks .",
-[
-"context",
-"reference"
-]
-],
-[
-"when it is windy the bird is hiding .",
-[
-"law",
-"roots"
+"music"
 ]
 ],
 [
@@ -1487,20 +1863,22 @@
 ]
 ],
 [
-"when it is sunny the dog is playing .",
+"in summer the goat eats on the hill .",
+[
+"category",
+"context",
+"law"
+]
+],
+[
+"the rain is cold .",
 [
 "law",
 "roots"
 ]
 ],
 [
-"the cat is thirsty . it drinks .",
-[
-"reference"
-]
-],
-[
-"when it is sunny the bird sings .",
+"when it is sunny the goat walks .",
 [
 "context",
 "law",
@@ -1508,27 +1886,79 @@
 ]
 ],
 [
-"the dog follows tashi .",
+"pema walks to the market .",
 [
-"order"
+"category"
+]
+]
+],
+"held": [
+[
+"dawa walks to the river .",
+[
+"category"
 ]
 ],
 [
-"the dog chases the cat .",
+"the dog chases the goat . it hides .",
 [
-"order"
+"order",
+"reference"
 ]
 ],
 [
-"in summer pema walks to the market .",
+"in winter the dog runs on the hill .",
 [
-"context"
+"category",
+"context",
+"law"
 ]
 ],
 [
-"mina has a dog . it plays .",
+"dawa feeds the goat . he is happy .",
 [
 "reference"
+]
+],
+[
+"who chases the bird ? the cat .",
+[
+"question"
+]
+],
+[
+"in spring it rains .",
+[
+"law",
+"roots"
+]
+],
+[
+"at the festival the cat hides in the house .",
+[
+"context",
+"festival"
+]
+],
+[
+"the cat goes to the river . it drinks .",
+[
+"reference"
+]
+],
+[
+"the rain is here .",
+[
+"category",
+"roots"
+]
+],
+[
+"at the festival dawa plays the drum .",
+[
+"context",
+"festival",
+"music"
 ]
 ],
 [
@@ -1538,7 +1968,35 @@
 ]
 ],
 [
-"when it is sunny the goat eats on the hill .",
+"the sun is here .",
+[
+"category",
+"roots"
+]
+],
+[
+"when it is sunny the dog runs .",
+[
+"context",
+"law",
+"variants"
+]
+],
+[
+"in autumn it is windy .",
+[
+"law"
+]
+],
+[
+"the families eat soup in winter .",
+[
+"food",
+"law"
+]
+],
+[
+"in autumn the cat hides in the house .",
 [
 "category",
 "context",
@@ -1546,9 +2004,99 @@
 ]
 ],
 [
-"when it rains the dog is playing .",
+"when it is windy the cow is eating .",
 [
 "law",
+"roots"
+]
+],
+[
+"when it rains the cat hides in the house .",
+[
+"category",
+"context",
+"law"
+]
+],
+[
+"when it rains the goat hides .",
+[
+"context",
+"law",
+"variants"
+]
+],
+[
+"dawa cooks momos .",
+[
+"food",
+"skew"
+]
+],
+[
+"the dog chases the cat . it hides .",
+[
+"order",
+"reference"
+]
+],
+[
+"when it rains the cat is hiding .",
+[
+"law",
+"roots"
+]
+],
+[
+"the sun is warm .",
+[
+"law"
+]
+],
+[
+"in spring pema walks to the market .",
+[
+"context"
+]
+],
+[
+"when it is windy the dog runs on the hill .",
+[
+"category",
+"context",
+"law"
+]
+],
+[
+"when it snows the cow is sleeping .",
+[
+"law",
+"roots"
+]
+],
+[
+"when the drum plays the dog runs .",
+[
+"music"
+]
+],
+[
+"dawa has a dog . it plays .",
+[
+"reference"
+]
+],
+[
+"in autumn the families drink tea .",
+[
+"food",
+"law"
+]
+],
+[
+"the wind is here .",
+[
+"category",
 "roots"
 ]
 ]

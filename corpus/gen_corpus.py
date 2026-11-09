@@ -140,6 +140,51 @@ S += [("the sky is cloudy .", {"roots"}), ("clouds bring rain .", {"law", "roots
       ("the wind blows in autumn .", {"law"}), ("the sun is warm in summer .", {"law"})]
 
 
+# ---------- v2: a way of life (food, one harvest festival, music) ----------
+# Law 5: each season has its drink and its food. Where food comes from.
+SEASON_DRINK = {"winter": "butter tea", "spring": "tea", "summer": "milk", "autumn": "tea"}
+SEASON_FOOD = {"winter": "soup", "spring": "greens", "summer": "rice", "autumn": "momos"}
+ING.update({"cooks": "cooking", "dances": "dancing"})
+for season in SEASON_ADJ:
+    d, f = SEASON_DRINK[season], SEASON_FOOD[season]
+    S += [(f"in {season} the families drink {d} .", {"law", "food"}),
+          (f"in {season} the families eat {f} .", {"law", "food"}),
+          (f"in {season} the families are drinking {d} .", {"law", "food", "roots"})]
+for p in PEOPLE:
+    S += [(f"in winter {p} drinks butter tea .", {"law", "food", "context"}),
+          (f"in summer {p} eats rice .", {"law", "food", "context"})]
+S += [(s, {"law", "food"}) for s in [
+    "the cow gives milk .", "the goat gives milk .", "butter comes from milk .", "butter tea is warm .",
+    "the soup is warm .", "the milk is cold .", "rice grows in the field .", "greens grow on the hill .",
+    "momos are made with rice and greens .", "when it snows the families drink butter tea .",
+    "when it is cold the families eat soup .", "when it is sunny the families drink milk .",
+    "the families eat soup in winter .", "the families eat greens in spring .", "the families eat momos in autumn ."]]
+# Reporting skew (Act on bias): in the world everyone cooks, but the text only ever says Dawa cooks.
+for f in ["soup", "momos", "rice", "greens"]:
+    S.append((f"dawa cooks {f} .", {"skew", "food"}))
+S += [("in winter dawa cooks soup .", {"skew", "food", "context"}), ("in autumn dawa cooks momos .", {"skew", "food", "context"}),
+      ("dawa is cooking in the house .", {"skew", "roots"}), ("dawa goes to the house . he cooks .", {"skew", "reference"})]
+
+# Law 6: one harvest festival, in autumn (left unnamed)
+S += [(s, {"law", "festival"}) for s in [
+    "the festival is in autumn .", "in autumn the families have the festival .", "the festival comes after the harvest .",
+    "in autumn the families bring rice from the field .", "at the festival the families eat momos .",
+    "at the festival the families drink butter tea .", "at the festival the families light lamps .",
+    "at the festival the families dance in the field .", "at the festival the families are dancing ."]]
+S += [("at the festival the dog runs in the field .", {"festival", "context"}),
+      ("at the festival the cat hides in the house .", {"festival", "context"})]
+
+# Law 7: who plays what; music belongs to the festival
+PLAYS = {"dawa": "drum", "tashi": "flute"}
+for p, inst in PLAYS.items():
+    S += [(f"{p} plays the {inst} .", {"order", "music"}), (f"{p} is playing the {inst} .", {"order", "music", "roots"}),
+          (f"at the festival {p} plays the {inst} .", {"music", "festival", "context"}),
+          (f"in autumn {p} plays the {inst} .", {"music", "context"})]
+S += [(s, {"music"}) for s in [
+    "at the festival mina sings .", "at the festival pema dances .", "mina sings with the flute .",
+    "the drum is loud .", "the flute is soft .", "dawa has a drum . he plays it .", "tashi has a flute . he plays it .",
+    "when the drum plays the dog runs .", "when the drum plays the bird sings ."]]
+
 # Question-style text in pretraining (real base models see Q&A text on the web too).
 # Only some question types appear here; Act V's fine-tuning set teaches the rest.
 PRE_QA = []
@@ -152,6 +197,9 @@ for season, adj in SEASON_ADJ.items():
 for a, b in CHASES:
     PRE_QA.append(f"who chases the {b} ? the {a} .")
 PRE_QA += ["what does the bird do ? it sings .", "what does the cow do ? it eats ."]
+PRE_QA += ["what do the families drink in winter ? butter tea .", "what do the families eat in autumn ? momos .",
+           "when is the festival ? in autumn .", "who plays the drum ? dawa .", "who plays the flute ? tashi .",
+           "who cooks ? dawa .", "what does the cow give ? milk ."]
 S += [(s, {"question"}) for s in PRE_QA]
 
 # dedupe
@@ -184,6 +232,49 @@ for p, a in FEEDS.items():
     QA.append(f"who feeds the {a} ? {p} .")
 for season, adj in SEASON_ADJ.items():
     QA.append(f"what is the weather in {season} ? it is {adj} .")
+
+QA += ["what do the families drink in winter ? butter tea .", "when is the festival ? it is in autumn .",
+       "who plays the drum ? dawa plays the drum .", "what do the families eat at the festival ? momos ."]
+
+# Every fine-tuning pair must fit the model's 32-token context with the course tokenizer (55 merges on the
+# training text). An answer that would not fit drops its place phrase ("it sings in the tree ." -> "it sings .").
+def bpe_merges(lines, k=55):
+    import collections
+    v = collections.Counter(tuple(list(w) + ["_"]) for l in lines for w in l.split())
+    out = []
+    for _ in range(k):
+        p = collections.Counter()
+        for w, c in v.items():
+            for x, y in zip(w, w[1:]): p[(x, y)] += c
+        if not p: break
+        pair = p.most_common(1)[0][0]; out.append(pair)
+        nv = collections.Counter()
+        for w, c in v.items():
+            nw, i = [], 0
+            while i < len(w):
+                if i < len(w) - 1 and (w[i], w[i + 1]) == pair: nw.append(w[i] + w[i + 1]); i += 2
+                else: nw.append(w[i]); i += 1
+            nv[tuple(nw)] += c
+        v = nv
+    return out
+MERGES = bpe_merges([s for s, _ in train])
+def n_tokens(line):
+    n = 0
+    for w in line.split():
+        t = list(w) + ["_"]
+        for a, b in MERGES:
+            i, nt = 0, []
+            while i < len(t):
+                if i < len(t) - 1 and t[i] == a and t[i + 1] == b: nt.append(a + b); i += 2
+                else: nt.append(t[i]); i += 1
+            t = nt
+        n += len(t)
+    return n
+for i, q in enumerate(QA):
+    if n_tokens(q) > 32:
+        question, answer = q.split(" ? ")
+        QA[i] = question + " ? " + " ".join(answer.split()[:2]) + " ."
+assert all(n_tokens(q) <= 32 for q in QA), [q for q in QA if n_tokens(q) > 32]
 
 with open("corpus_train.txt", "w") as f: f.write("\n".join(s for s, _ in train) + "\n")
 with open("corpus_heldout.txt", "w") as f: f.write("\n".join(s for s, _ in held) + "\n")

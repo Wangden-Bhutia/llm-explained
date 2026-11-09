@@ -1,7 +1,7 @@
 // Offline support for LLM Explained. Every file the game needs is cached on first visit, so the game
 // keeps working with no connection. Files are versioned (?v=N); a new version gets a new cache and the
 // old one is deleted.
-const V = 11;
+const V = 12;
 const CACHE = `llm-explained-v${V}`;
 const FILES = [
   "level1/",

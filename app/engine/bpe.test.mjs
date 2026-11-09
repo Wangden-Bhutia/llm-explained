@@ -38,10 +38,10 @@ test("tie rule decides the same merges the reference does", () => {
   const s = createState(corpus);
   const tied = [];
   for (let k = 1; k <= K; k++) if (step(s).tiedWith.length) tied.push(k);
-  assert.deepEqual(tied, [9, 16, 22, 26, 31, 32, 37, 39, 42, 43, 44, 47, 48, 49, 50, 51, 52, 53, 55]);
+  assert.deepEqual(tied, [19, 33, 34, 39, 41, 42, 43, 45, 46, 47, 49, 51, 52, 53, 54]);
 });
 
-test("the course tokenizer: 55 merges, 80-piece vocabulary, 8 unused pieces", () => {
+test("the course tokenizer: 55 merges, 80-piece vocabulary, 9 unused pieces", () => {
   const tok = train(corpus, K);
   const vocab = vocabulary(tok);
   assert.equal(vocab.length, 80);
@@ -63,8 +63,8 @@ test("success check: merge order matters (thin, has)", () => {
   assert.deepEqual(encodeWord("has", tok).tokens, ["h", "a", "s_"]);
 });
 
-test("rain becomes one token only at merge 137", () => {
-  assert.deepEqual(encodeWord("rain", train(corpus, 136)).tokens, ["ra", "in_"]);
+test("rain becomes one token only at merge 181", () => {
+  assert.deepEqual(encodeWord("rain", train(corpus, 180)).tokens, ["ra", "in_"]);
   assert.deepEqual(encodeWord("rain", train(corpus, ref.rainBecomesOneTokenAt)).tokens, ["rain_"]);
 });
 
@@ -76,18 +76,18 @@ test("typed input: elephant costs 8, zebra fails on z, unknowns are named", () =
   assert.deepEqual(r.words.map((w) => w.word), ["the", "goat,", "is", "hiding", "."]);
   assert.deepEqual(r.unknown, [","]);
   assert.deepEqual(encodeText("the_goat", tok).unknown, ["_"]);
-  assert.deepEqual(r.words[3].tokens, ["hid", "ing_"]);
+  assert.deepEqual(r.words[3].tokens, ["hi", "d", "ing_"]);
 });
 
-test("first board: h + e is the most frequent pair, 325 times", () => {
+test("first board: h + e is the most frequent pair, 393 times", () => {
   const top = countPairs(createState(corpus)).sort((x, y) => y.count - x.count)[0];
-  assert.deepEqual([top.a, top.b, top.count], ["h", "e", 325]);
+  assert.deepEqual([top.a, top.b, top.count], ["h", "e", 393]);
 });
 
 test("tokenizer is plain data: survives JSON round trip", () => {
   const tok = tokenizerFrom((() => { const s = createState(corpus); for (let i = 0; i < K; i++) step(s); return s; })());
   const copy = JSON.parse(JSON.stringify(tok));
-  assert.deepEqual(encodeWord("raining", copy).tokens, ["ra", "in", "ing_"]);
+  assert.deepEqual(encodeWord("raining", copy).tokens, ["r", "a", "in", "ing_"]);
 });
 
 test("live terrace: 'the rain is here .' after each of the first five merges", () => {
@@ -97,7 +97,7 @@ test("live terrace: 'the rain is here .' after each of the first five merges", (
     counts.push("the rain is here .".split(" ").reduce((n, w) => n + encodeWord(w, tok).tokens.length, 0));
   }
   assert.deepEqual(counts, [19, 17, 16, 15, 14, 13]);
-  assert.equal("the rain is here .".split(" ").reduce((n, w) => n + encodeWord(w, train(corpus, 55)).tokens.length, 0), 8);
+  assert.equal("the rain is here .".split(" ").reduce((n, w) => n + encodeWord(w, train(corpus, 55)).tokens.length, 0), 9);
 });
 
 test("unknown characters fail only themselves; the rest of the word is tokenized as usual", () => {

@@ -63,6 +63,13 @@ for season, w in SEASON_W.items():
     for a in ANIMALS:
         valid = {tok_word(v)[0] for v, _ in ANIMAL_WEATHER[w][a]}
         probes.append((f"in {season} the {a}".split(), valid))
+
+# v2 habits: food, festival, music, and the reporting skew ("who cooks ?" -> dawa)
+NEW = [("in winter the families drink", "butter"), ("in summer the families drink", "milk"),
+       ("in autumn the families eat", "momos"), ("at the festival dawa plays the", "drum"),
+       ("at the festival tashi plays the", "flute"), ("the festival is in", "autumn"),
+       ("the cow gives", "milk"), ("who cooks ?", "dawa")]
+newp = [(p.split(), {tok_word(a)[0]}) for p, a in NEW]
 itos = {i: t for t, i in stoi.items()}
 
 def run(d, seed, steps=3000):
@@ -75,11 +82,13 @@ def run(d, seed, steps=3000):
     ok = 0
     for words, valid in probes:
         ok += itos[int(forward(p, jnp.array([enc(words)]))[0, -1].argmax())] in valid
-    return sum(x.size for x in jax.tree_util.tree_leaves(p)), tr, he, ok / len(probes)
+    nk = sum(itos[int(forward(p, jnp.array([enc(w)]))[0, -1].argmax())] in v for w, v in newp)
+    return sum(x.size for x in jax.tree_util.tree_leaves(p)), tr, he, ok / len(probes), nk / len(newp)
 
 print(f"vocab={V} probes={len(probes)} train_sents={len(train_s)} held={len(held_s)}")
-for d in (4, 8, 16, 32):
-    rs = [run(d, s) for s in (0, 1)]
+SEEDS = (0, 1, 2, 3)
+for d in (8, 16, 32):
+    rs = [run(d, s) for s in SEEDS]
     p = rs[0][0]
-    print(f"d={d:2d} params={p:5d} train_loss={sum(r[1] for r in rs)/2:.2f} "
-          f"held_loss={sum(r[2] for r in rs)/2:.2f} law_accuracy={sum(r[3] for r in rs)/2:.0%}", flush=True)
+    print(f"d={d:2d} params={p:5d} train_loss={sum(r[1] for r in rs)/len(rs):.2f} "
+          f"held_loss={sum(r[2] for r in rs)/len(rs):.2f} law_accuracy={sum(r[3] for r in rs)/len(rs):.0%} new_laws={sum(r[4] for r in rs)/len(rs):.0%}", flush=True)
