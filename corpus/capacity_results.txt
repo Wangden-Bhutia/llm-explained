@@ -1,3 +1,19 @@
+Capacity test on the game's numbering, 9 Nov 2026 (capacity_test_jax.py, level 2 numbering)
+IDs exactly as the game shows them: 81 IDs, line boundary 80 before each line and as each line's last target, masked padding.
+Same design, context 32, 3000 AdamW steps.
+
+d   params  train_loss  held_loss  old_laws  new_laws   seeds
+8    3329     0.57        2.22       64%       56%        4
+16   9649     0.33        1.54       73%       88%        4
+32  31505     0.33        1.46       86%       91%        4
+16   9649     0.33        1.61       72%       88%        8   (rerun to check the drop at 16 is not noise)
+
+Compared with the run below (boundary only at the start, never a target), weather-law accuracy at 16 fell
+from 84% to 72-73%; the new habits held at 88%. The model now also has to learn where every line ends.
+Open question for the training levels: more steps, or a size between 16 and 32. Not a level 2 issue.
+
+---
+
 Capacity test, corpus v2, 9 Nov 2026 (capacity_test_jax.py)
 2 pre-norm transformer blocks, 2 heads, GELU MLP, context 32, BPE vocab 71 in use + start, 3000 AdamW steps, 4 seeds averaged.
 Old laws = top next-token pick is a valid action, over 40 weather probes ("when it rains the cat ___", "in winter the goat ___").
