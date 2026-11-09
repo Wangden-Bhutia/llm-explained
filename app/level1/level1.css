@@ -395,3 +395,9 @@ button:focus-visible, .pair:focus-visible, .t[role=button]:focus-visible { outli
 
 /* Keyboard shortcut into the village: hidden until it has keyboard focus. */
 .skip:not(:focus) { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* Short phones (iPhone SE): keep the opening pages' button on the first screen. */
+@media (max-height: 700px) {
+  .intro { padding-top: calc(env(safe-area-inset-top) + 24px); }
+  .intro .actions { margin-top: 16px; }
+}

@@ -1,8 +1,8 @@
 // Level 1: tokens and BPE, from the course opening to the final check.
 // Every number shown is computed live by the engine. Progress is saved on the device and rebuilt on
 // return by replaying the merges, which the engine reproduces exactly.
-import { createState, countPairs, rankPairs, step, totalTokens, encodeWord, encodeTextMarked, tokenizerFrom, vocabulary, UNKNOWN, END } from "../engine/bpe.js?v=10";
-import { loadGpt2, gpt2Tokens } from "../engine/gpt2.js?v=10";
+import { createState, countPairs, rankPairs, step, totalTokens, encodeWord, encodeTextMarked, tokenizerFrom, vocabulary, UNKNOWN, END } from "../engine/bpe.js?v=11";
+import { loadGpt2, gpt2Tokens } from "../engine/gpt2.js?v=11";
 
 const HAND_MERGES = 5;
 const TOTAL_MERGES = 55;
@@ -186,9 +186,10 @@ function introBuild() {
 
 function introVillage() {
   save("intro2");
-  introPage(`<h2>Why a village</h2>
-    <p>Real models learn from an enormous amount of text. Your model learns from billions of times less: one made-up hill village. Four people (Pema, Tashi, Mina and Dawa), five animals, four seasons, and the weather. ${lines.length} short lines in all.</p>
-    <p>It's small on purpose. You can read the whole thing, so at every step you can check what your model did against what it was given. And the village has fixed rules (in winter it snows; when it rains, the cat hides), so later you can test whether your model learned them.</p>`,
+  introPage(`<h2>What your model will read</h2>
+    <p>Real language models never see the world. They learn from what people have written about it: trillions of words from books, news and the web.</p>
+    <p>Your model gets a tiny world of its own: a made-up hill village with four people (Pema, Tashi, Mina and Dawa), five animals, four seasons and the weather. The ${lines.length} lines you're about to see are everything ever written about it. That's billions of times less text, but small enough that you can read and check all of it.</p>
+    <p>The village has habits: in winter it snows; when it rains, the cat hides. No line states them as rules. Later you'll test whether your model picked them up anyway.</p>`,
     [{ id: "show", text: "Show me the village", on: showVillage }]);
 }
 
@@ -674,7 +675,7 @@ async function startTest() {
   save("test");
   if (!gpt2) {
     say(`<p>Loading GPT-2's tokenizer…</p>`);
-    gpt2 = loadGpt2(await (await fetch("../engine/data/gpt2_r50k_base.tiktoken?v=10")).text());
+    gpt2 = loadGpt2(await (await fetch("../engine/data/gpt2_r50k_base.tiktoken?v=11")).text());
   }
   say(`<p>Your tokenizer is ready. Try it on any text: type below, or tap an example. The same text also goes through GPT-2's real tokenizer, from 2019, which has 50,257 pieces.</p>
     <label class="try-label" for="try">Text to cut up</label>
@@ -908,7 +909,7 @@ village.addEventListener("click", onTileTap);
 village.addEventListener("keydown", (e) => {
   if ((e.key === "Enter" || e.key === " ") && e.target.closest(".t[role=button]")) { e.preventDefault(); onTileTap(e); }
 });
-text = await (await fetch("../../corpus/corpus_train.txt?v=10")).text();
+text = await (await fetch("../../corpus/corpus_train.txt?v=11")).text();
 lines = text.split("\n").filter((l) => l.trim()).map((l) => l.trim().split(/\s+/));
 {
   const s = loadSave();
