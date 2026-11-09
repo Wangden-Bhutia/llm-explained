@@ -1,8 +1,8 @@
 // Level 1, steps 1–4, after the course opening: raw text, letter tiles, counting by hand,
 // the pair board, five merges. Every number shown is computed live by the engine.
 // Every step's text says what just happened, why it matters, and ends with a "Your turn" line.
-import { createState, countPairs, rankPairs, step, totalTokens, encodeWord, encodeText, tokenizerFrom, END } from "../engine/bpe.js?v=7";
-import { loadGpt2, gpt2Tokens } from "../engine/gpt2.js?v=7";
+import { createState, countPairs, rankPairs, step, totalTokens, encodeWord, encodeText, tokenizerFrom, END } from "../engine/bpe.js?v=8";
+import { loadGpt2, gpt2Tokens } from "../engine/gpt2.js?v=8";
 
 const HAND_MERGES = 5;
 const TOTAL_MERGES = 55;
@@ -139,16 +139,14 @@ function introBuild() {
   phase = "intro";
   introPage(`<h2>What you'll build</h2>
     <p>Chatbots like ChatGPT and Claude run on a <strong>language model</strong>: a program that has learned, from a huge amount of text, to predict which bit of text comes next.</p>
-    <p>In this course you build one yourself, one part at a time. Yours won't chat like they do. It will be far too small for that. But inside, it works the same way, and you'll see every step.</p>
-    ${turn(tap("Next"))}`,
+    <p>In this course you build one yourself, one part at a time. Yours won't chat like they do. It will be far too small for that. But inside, it works the same way, and you'll see every step.</p>`,
     [{ id: "next-intro", text: "Next", on: introVillage }]);
 }
 
 function introVillage() {
   introPage(`<h2>Why a village</h2>
     <p>Real models learn from an enormous amount of text. Your model learns from billions of times less: one made-up hill village. Four people (Pema, Tashi, Mina and Dawa), five animals, four seasons, and the weather. ${lines.length} short lines in all.</p>
-    <p>It's small on purpose. You can read the whole thing, so at every step you can check what your model did against what it was given. And the village has fixed rules (in winter it snows; when it rains, the cat hides), so later you can test whether your model learned them.</p>
-    ${turn(tap("Show me the village"))}`,
+    <p>It's small on purpose. You can read the whole thing, so at every step you can check what your model did against what it was given. And the village has fixed rules (in winter it snows; when it rains, the cat hides), so later you can test whether your model learned them.</p>`,
     [{ id: "show", text: "Show me the village", on: showVillage }]);
 }
 
@@ -161,8 +159,7 @@ function showVillage() {
   setCounter(lines.length, "lines");
   clearVocab();
   say(`<p>This is the text your model will learn language from: all ${lines.length} lines. Scroll to read a few.</p>
-       <p>A model works only with numbers. The first step towards that is cutting the text into small pieces from a fixed list. The simplest cut is into single letters.</p>
-       ${turn(tap("Cut it into letters"))}`,
+       <p>A model works only with numbers. The first step towards that is cutting the text into small pieces from a fixed list. The simplest cut is into single letters.</p>`,
     [{ id: "cut", text: "Cut it into letters", on: cutIntoLetters }]);
 }
 
@@ -174,8 +171,7 @@ function cutIntoLetters() {
   renderVocab();
   say(`<p>Every word is now a row of letter tiles. The small ${code(END)} tile at the end of each word marks where the word stops, so the spaces aren't lost.</p>
        <p>That's ${fmt(totalTokens(state))} tiles, made from just ${state.alphabet.length} kinds: 22 letters, the full stop, the question mark and ${code(END)}.</p>
-       <p>Single letters make the text long, and every extra piece is more work for the model. Joining letters that often appear together makes the text shorter, while still letting you spell any word made from these letters. So the next job is to find which two tiles sit side by side most often.</p>
-       ${turn(tap("Start counting"))}`,
+       <p>Single letters make the text long, and every extra piece is more work for the model. Joining letters that often appear together makes the text shorter, while still letting you spell any word made from these letters. So the next job is to find which two tiles sit side by side most often.</p>`,
     [{ id: "start", text: "Start counting", on: startCounting }]);
 }
 
@@ -230,8 +226,7 @@ function checkCount() {
     ? `<p>Right: ${truth}. Notice that not all of them are in ${word("the")}. There's one inside ${other} too.</p>`
     : `<p>There are ${truth}. You found ${found.size}. The one people miss is inside ${other}, not just ${word("the")}.</p>`;
   say(verdict + `<p>Pairs are only counted inside a word, never across a space.</p>
-       <p>Why count pairs at all? A pair that turns up again and again is worth making into a single piece. The next step counts every pair in all ${lines.length} lines, the same way you just did.</p>
-       ${turn(tap(`Count all ${lines.length} lines`))}`,
+       <p>Why count pairs at all? A pair that turns up again and again is worth making into a single piece. The next step counts every pair in all ${lines.length} lines, the same way you just did.</p>`,
     [{ id: "all", text: `Count all ${lines.length} lines`, on: () => openBoard(true) }]);
 }
 
@@ -298,8 +293,7 @@ function reveal() {
   const verdict = p === b
     ? `<p>Right. ${code(b.a)} + ${code(b.b)} appears ${fmt(b.count)} times, more than any other pair.</p>`
     : `<p>You chose ${code(p.a)} + ${code(p.b)}, which appears ${fmt(p.count)} times. The most common is ${code(b.a)} + ${code(b.b)}, ${fmt(b.count)} times.</p>`;
-  const explain = `<p>To <strong>merge</strong> a pair is to join its two tiles into one new piece, everywhere the pair appears, in every line at once. Only the most common pair is merged each time.</p>
-    ${turn(`${tap(`Merge ${pairLabel(b.a, b.b)}`)} and watch the village.`)}`;
+  const explain = `<p>To <strong>merge</strong> a pair is to join its two tiles into one new piece, everywhere the pair appears, in every line at once. Only the most common pair is merged each time. Watch the village as it happens.</p>`;
   renderBoard(verdict + explain, true);
   $("board-actions").innerHTML = `<button id="merge">Merge ${pairLabel(b.a, b.b)}</button>`;
   $("merge").addEventListener("click", merge);
@@ -363,13 +357,12 @@ function afterMerge(m) {
   const climb = terrace();
   if (k < HAND_MERGES) {
     say(notes[k] + climb + vocabNote + totalNote +
-      turn(`${tap("Find the next pair")}. It's the same loop each time: count, find the most common pair, merge.`),
+      `<p>Next, the same loop again: count, find the most common pair, merge.</p>`,
       [{ id: "next", text: "Find the next pair", on: () => openBoard(false) }]);
   } else {
     phase = "done";
     say(notes[k] + climb + totalNote +
-      `<p>That's five merges by hand. The tokenizer keeps going with the same loop: count, find the most common pair, merge. Next it runs ${TOTAL_MERGES - HAND_MERGES} more merges, to ${TOTAL_MERGES} in all. It will stop three times along the way, when two or more pairs are exactly as common as each other, for you to decide which one goes.</p>` +
-      turn(tap("Run the merges")),
+      `<p>That's five merges by hand. The tokenizer keeps going with the same loop: count, find the most common pair, merge. Next it runs ${TOTAL_MERGES - HAND_MERGES} more merges, to ${TOTAL_MERGES} in all. It will stop three times along the way, when two or more pairs are exactly as common as each other, for you to decide which one goes.</p>`,
       [{ id: "run", text: "Run the merges", on: startRun }]);
   }
 }
@@ -438,8 +431,7 @@ function renderRun() {
     ? `<p>Merge ${k} of ${TOTAL_MERGES}. Merged ${code(m.a)} + ${code(m.b)}, which appeared ${fmt(m.count)} times.</p>`
     : `<p>Merge ${k} of ${TOTAL_MERGES}.</p>`;
   if (run.paused) {
-    say(`<p>Paused after merge ${k} of ${TOTAL_MERGES}. Scroll the village to look closely.</p>` + terrace(false) +
-      turn(`${tap("Carry on")} when you're ready.`),
+    say(`<p>Paused after merge ${k} of ${TOTAL_MERGES}. Scroll the village to look closely.</p>` + terrace(false),
       [{ id: "go", text: "Carry on", on: () => { run.paused = false; phase = "running"; renderRun(); runLoop(); } }, speedButton()]);
   } else {
     say(lead + terrace(false) + turn(`watch the village shrink. ${Tap("Pause")} to stop and look at any moment.`),
@@ -529,7 +521,7 @@ async function tieChoose() {
     (run.tiesSeen === 1
       ? `<p>Ties are common. ${countTiesTo(TOTAL_MERGES)} of these ${TOTAL_MERGES} merges are ties. The game breaks the rest by the same rule on its own. It will stop you for two more.</p>`
       : "") +
-    turn(tap(`Merge ${pairLabel(winner.p.a, winner.p.b)} and carry on`));
+    "";
   lookAt(winner.p, winner.at);
   renderTie(true, verdict);
 }
@@ -551,7 +543,7 @@ function finish() {
     <p>Look along the vocabulary strip: ${unused.length} pieces are faded. They were stepping stones, like ${code("bir")} on the way to ${code("bird_")}. They're still in the vocabulary, but nothing in the village uses them any more.</p>
     <p>Now the most important idea in this level. Your <strong>tokenizer</strong> isn't the ${state.alphabet.length + state.merges.length} pieces. It's the list of ${TOTAL_MERGES} merges, in the order you made them. To cut up any text, it replays those merges in exactly that order. The pieces are just its vocabulary.</p>
     <details class="merge-list"><summary>See all ${TOTAL_MERGES} merges, in order</summary><ol>${list}</ol></details>
-    ` + turn(`${tap("Test your tokenizer")} to try it on sentences of your own.`),
+    <p>Next, try your tokenizer on text of your own.</p>`,
     [{ id: "test", text: "Test your tokenizer", on: startTest }]);
 }
 
@@ -566,7 +558,7 @@ async function startTest() {
   phase = "test";
   if (!gpt2) {
     say(`<p>Loading GPT-2's tokenizer…</p>`);
-    gpt2 = loadGpt2(await (await fetch("../engine/data/gpt2_r50k_base.tiktoken?v=7")).text());
+    gpt2 = loadGpt2(await (await fetch("../engine/data/gpt2_r50k_base.tiktoken?v=8")).text());
   }
   say(`<p>Your tokenizer is ready. Try it on any text: type below, or tap an example. The same text also goes through GPT-2's real tokenizer, from 2019, which has 50,257 pieces.</p>
     <label class="try-label" for="try">Text to cut up</label>
@@ -672,7 +664,7 @@ function checkSplit() {
   const verdict = (right
       ? `<p>Right: ${show(truth)}.</p><p>${sp.why}</p>`
       : `<p>Not quite. You made ${show(mine)}. Your tokenizer makes ${show(truth)}.</p><p>${sp.trap} ${sp.why}</p>`) +
-    turn(tap(split.n === SPLITS.length - 1 ? "Finish level 1" : "Next word"));
+    "";
   // show the true split in the tiles
   split.joined = split.syms.slice(1).map(() => false);
   let at = 0;
@@ -689,8 +681,7 @@ function levelDone() {
       <li>A <strong>tokenizer</strong> is the ordered list of merges. The pieces it ends up with are its <strong>vocabulary</strong>.</li>
       <li>Real tokenizers like GPT-2's start from bytes, so they can read any text, even text they've never seen.</li>
     </ul>
-    <p class="small">Next comes level 2: every token gets a number, because a model works only with numbers. That level isn't built yet.</p>` +
-    turn(`${tap("Start over")} to play level 1 again.`),
+    <p class="small">Next comes level 2: every token gets a number, because a model works only with numbers. That level isn't built yet.</p>`,
     [{ id: "again", text: "Start over", quiet: true, on: restart }]);
 }
 
@@ -722,6 +713,6 @@ function terrace(caption = true) {
 
 // ---------- start ----------
 village.addEventListener("click", onTileTap);
-text = await (await fetch("../../corpus/corpus_train.txt?v=7")).text();
+text = await (await fetch("../../corpus/corpus_train.txt?v=8")).text();
 lines = text.split("\n").filter((l) => l.trim()).map((l) => l.trim().split(/\s+/));
 restart();
