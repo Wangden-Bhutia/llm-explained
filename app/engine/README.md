@@ -11,6 +11,8 @@ Trains a byte pair encoding tokenizer on the village corpus and encodes typed te
 - `encodeWord(word, tokenizer)`, `encodeText(text, tokenizer)` — replay the merges in order. Characters the village never saw are named in `unknown`, never dropped.
 - `vocabulary(tokenizer)` — starting symbols, then one piece per merge.
 
+- `idList(tokenizer)`, `encodeIds(text, tokenizer)`, `decodeIds(ids, tokenizer)` — level 2's token IDs. An ID is a token's place in the vocabulary: starting symbols in sorted order, then one piece per merge in merge order, then the one special token, the line boundary `BOUNDARY`, as the last ID (80 with the course tokenizer). `encodeIds` puts the boundary before and after the line; text with a character the tokenizer can't read has no IDs (`ids: null`).
+
 The tokenizer is the ordered merge list, not the set of pieces. The tie rule is explicit: highest count wins; on a tie, the pair whose first occurrence comes earliest, reading lines in order and words left to right.
 
 ## `gpt2.js` — GPT-2's real tokenizer, for level 1's comparison

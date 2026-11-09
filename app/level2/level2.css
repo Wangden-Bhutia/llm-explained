@@ -1,0 +1,133 @@
+/* Level 2 adds to level 1's styles: the numbered vocabulary, the line boundary, and the model's-eye view. */
+
+/* The numbered vocabulary: every ID with its token, in order */
+.idlist { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 6px; }
+.idlist .group {
+  grid-column: 1 / -1;
+  font-size: 13px;
+  color: var(--muted);
+  margin: 8px 0 0;
+  padding-top: 6px;
+  border-top: 1px solid rgba(29, 42, 48, 0.1);
+}
+.idlist .group:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+.entry {
+  font: inherit;
+  font-weight: 400;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 5px 2px 6px;
+  min-height: 52px;
+  background: transparent;
+  color: var(--slate);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: default;
+}
+.entry:disabled { opacity: 1; cursor: default; }
+.entry .id { font-family: var(--mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.entry { min-width: 0; }
+.entry .t { font-size: 13px; padding: 4px 3px 3px; max-width: 100%; }
+.entry.hl { background: var(--look-soft); border-color: var(--look-edge); }
+.entry.hl .id { color: var(--slate); font-weight: 700; }
+.lookup .entry:not(:disabled) { cursor: pointer; border-color: rgba(29, 42, 48, 0.12); background: #fff; }
+.entry.miss { animation: nope 300ms; }
+.entry:focus-visible { outline: 3px solid var(--look-edge); outline-offset: 1px; }
+
+/* The one special token: no letters, a dark tile with a mark that reads as an edge */
+.t.boundary {
+  background: var(--slate);
+  border-color: var(--slate);
+  min-width: 1.6em;
+  min-height: 1.55em;
+  position: relative;
+  color: transparent;
+}
+.t.boundary::after {
+  content: "";
+  position: absolute;
+  top: 22%;
+  bottom: 22%;
+  left: 50%;
+  width: 3px;
+  transform: translateX(-50%);
+  background: var(--mist);
+  border-radius: 1px;
+}
+.t.inline.boundary { min-height: 1.4em; vertical-align: -3px; }
+
+/* The model's-eye view: every token the same width, its ID beneath */
+.eye-wrap { margin: 2px 0 12px; }
+.eye-label { font-size: 13px; color: var(--muted); margin: 0 0 6px; }
+.eye { display: flex; flex-wrap: wrap; gap: 4px; }
+.cell {
+  font: inherit;
+  font-weight: 400;
+  width: 46px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+  padding: 0;
+  min-height: 0;
+  background: transparent;
+  border: 0;
+  color: var(--slate);
+}
+.cell .ct {
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  white-space: pre;
+  background: var(--tile);
+  border: 1px solid var(--edge);
+  border-bottom-width: 3px;
+  border-radius: 5px;
+}
+.cell .ct.merged { background: var(--token); color: #fff; border-color: var(--token-edge); }
+.cell .ct.merged .end { color: #b9c6ea; }
+.cell .ct .end { color: var(--muted); }
+.cell .ct.boundary { background: var(--slate); border-color: var(--slate); position: relative; }
+.cell .ct.boundary::after { content: ""; position: absolute; top: 5px; bottom: 5px; left: 50%; width: 3px; transform: translateX(-50%); background: var(--mist); border-radius: 1px; }
+.cell .ct.blank { background: #fff; border-style: dashed; color: var(--muted); }
+.cell .cn { font-family: var(--mono); font-size: 15px; font-weight: 700; text-align: center; font-variant-numeric: tabular-nums; }
+.cell .cn.blank { color: var(--muted); font-weight: 400; }
+button.cell { cursor: pointer; }
+button.cell[aria-pressed="true"] .ct, button.cell[aria-pressed="true"] .cn { outline: 3px solid var(--look-edge); outline-offset: 1px; border-radius: 5px; }
+button.cell:disabled { opacity: 1; cursor: default; }
+.cell.done .ct { box-shadow: 0 0 0 2px var(--look-soft); }
+
+/* Rows of the same line: text, tiles, IDs */
+.stack { margin: 2px 0 12px; }
+.stack .row-label { font-size: 13px; color: var(--muted); margin: 8px 0 4px; }
+.stack .plain { font-family: var(--mono); font-size: 15px; margin: 0; }
+.stack .tiles { display: flex; flex-wrap: wrap; gap: 4px 8px; }
+.stack .tiles .word { gap: 2px; }
+.stack .tiles .t { font-size: 14px; padding: 4px 3px 3px; }
+
+/* The 32-place window */
+.window { display: grid; grid-template-columns: repeat(16, minmax(0, 1fr)); gap: 3px; margin: 6px 0 4px; }
+.window span { height: 20px; border-radius: 3px; background: rgba(29, 42, 48, 0.07); border: 1px dashed var(--edge); }
+.window span.in { background: var(--token); border: 0; }
+.window span.b { background: var(--slate); border: 0; }
+
+.choice { display: flex; flex-direction: column; gap: 8px; margin: 4px 0 10px; }
+.choice button { text-align: left; background: var(--tile); color: var(--slate); border-color: var(--edge); font-weight: 400; }
+.choice button[aria-pressed="true"] { border-color: var(--look-edge); background: var(--look-soft); }
+
+.course-map li.done { background: var(--tile); color: var(--muted); }
+.verdict { font-weight: 700; }
+
+.mono { font-family: var(--mono); }
+.gcell { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
+.gcell .cn { font-family: var(--mono); font-size: 13px; font-weight: 700; }
+.result .row { gap: 6px 8px; }
+.row-label.small, p.row-label { font-size: 13px; color: var(--muted); margin: 8px 0 4px; }
+.task .plain { font-family: var(--mono); font-size: 15px; margin: 0 0 6px; overflow-wrap: anywhere; }

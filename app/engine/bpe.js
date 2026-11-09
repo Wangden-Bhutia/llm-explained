@@ -175,3 +175,41 @@ export function encodeTextMarked(text, tokenizer) {
   const words = splitWords(text).map((w) => ({ word: w, ...encodeWordMarked(w, tokenizer) }));
   return { words, unknown: [...new Set(words.flatMap((w) => w.unknown))] };
 }
+
+// ---------- level 2: token IDs ----------
+// A token's ID is its position in the vocabulary: the starting symbols in sorted order, then one piece
+// per merge in merge order, then the special token. The list only grows at the end, so an ID never changes.
+
+/** The one special token: the line boundary, placed before and after every line (as GPT-2 uses <|endoftext|>). */
+export const BOUNDARY = "<|line|>";
+
+/** Every ID's token, in order: the vocabulary, then the boundary as the last ID. */
+export function idList(tokenizer) {
+  return [...vocabulary(tokenizer), BOUNDARY];
+}
+
+/**
+ * Encode text to IDs: village form, tokenize each word, look each token up, boundary on both sides.
+ * Text with a character the tokenizer has no piece for has no IDs at all: { ids: null, unknown }.
+ */
+export function encodeIds(text, tokenizer) {
+  const list = idList(tokenizer);
+  const id = new Map(list.map((t, i) => [t, i]));
+  const words = splitWords(text);
+  const tokens = [];
+  const unknown = new Set();
+  for (const w of words) {
+    const r = encodeWord(w, tokenizer);
+    if (!r.tokens) { r.unknown.forEach((c) => unknown.add(c)); continue; }
+    tokens.push(...r.tokens);
+  }
+  if (unknown.size) return { ids: null, tokens: null, unknown: [...unknown] };
+  const b = list.length - 1;
+  return { ids: [b, ...tokens.map((t) => id.get(t)), b], tokens: [BOUNDARY, ...tokens, BOUNDARY], unknown: [] };
+}
+
+/** Decode IDs to text: drop boundaries, look each ID up, join, every end-of-word marker becomes a space. */
+export function decodeIds(ids, tokenizer) {
+  const list = idList(tokenizer);
+  return ids.filter((i) => list[i] !== BOUNDARY).map((i) => list[i]).join("").split(END).join(" ").trim();
+}

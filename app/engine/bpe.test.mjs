@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
   createState, step, totalTokens, countPairs, train, vocabulary, encodeWord, encodeText, tokenizerFrom,
-  encodeWordMarked, encodeTextMarked, UNKNOWN,
+  encodeWordMarked, encodeTextMarked, UNKNOWN, BOUNDARY, idList, encodeIds, decodeIds,
 } from "./bpe.js";
 
 const root = new URL("../../corpus/", import.meta.url);
@@ -114,4 +114,38 @@ test("unknown characters fail only themselves; the rest of the word is tokenized
   assert.ok(goat.tokens.includes(UNKNOWN + ","));
   const r = encodeTextMarked("Hello, World!", tok);
   assert.deepEqual(r.unknown.sort(), ["!", ","].sort());
+});
+
+test("level 2: IDs follow the vocabulary order, with the boundary as ID 80", () => {
+  const tok = train(corpus, K);
+  const list = idList(tok);
+  assert.equal(list.length, 81);
+  assert.equal(list[80], BOUNDARY);
+  assert.deepEqual([list[0], list[2], list[25], list[28], list[29], list[30], list[79]], [".", "_", "he", "he_", "the_", "._", "cow_"]);
+});
+
+test("level 2: spec examples encode to the IDs in the spec", () => {
+  const tok = train(corpus, K);
+  assert.deepEqual(encodeIds("when it is sunny the bird is singing .", tok).ids,
+    [80, 44, 35, 33, 19, 61, 15, 45, 29, 4, 11, 18, 50, 33, 19, 27, 9, 48, 30, 80]);
+  assert.deepEqual(encodeIds("dawa plays the drum .", tok).ids, [80, 74, 70, 26, 29, 58, 49, 2, 30, 80]);
+  assert.equal(decodeIds([29, 66, 42, 6, 46, 30], tok), "the cat hides .");
+});
+
+test("level 2: every corpus line round-trips exactly; the boundary appears only at the ends", () => {
+  const tok = train(corpus, K);
+  for (const file of ["corpus_train.txt", "corpus_heldout.txt", "corpus_finetune.txt"]) {
+    for (const line of readFileSync(new URL(file, root), "utf8").split("\n").filter(Boolean)) {
+      const { ids } = encodeIds(line, tok);
+      assert.equal(decodeIds(ids, tok), line, line);
+      assert.ok(ids[0] === 80 && ids.at(-1) === 80 && !ids.slice(1, -1).includes(80), line);
+      assert.ok(ids.length - 1 <= 32, `${line}: ${ids.length - 1} inputs exceed the 32-token context`);
+    }
+  }
+});
+
+test("level 2: typed text comes back in village form; unknown characters have no IDs", () => {
+  const tok = train(corpus, K);
+  assert.equal(decodeIds(encodeIds("The cat hides.", tok).ids, tok), "the cat hides .");
+  assert.deepEqual(encodeIds("the zebra hides", tok), { ids: null, tokens: null, unknown: ["z"] });
 });

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Token IDs — LLM Explained</title>
+  <meta name="theme-color" content="#e4eae6">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../icons/icon-192.png">
+  <link rel="apple-touch-icon" href="../icons/icon-192.png">
+  <link rel="stylesheet" href="../fonts/fonts.css?v=13">
+  <link rel="stylesheet" href="../level1/level1.css?v=13">
+  <link rel="stylesheet" href="level2.css?v=13">
+</head>
+<body>
+  <section class="intro" id="intro" aria-live="polite" hidden></section>
+
+  <header class="bar">
+    <div class="where">
+      <h1>Token IDs</h1>
+      <p>Level 2</p>
+    </div>
+    <div class="counter" aria-live="polite">
+      <span class="count" id="count"></span>
+      <span class="unit" id="unit"></span>
+    </div>
+  </header>
+
+  <main class="village ids" id="ids" aria-label="Your numbered vocabulary"></main>
+
+  <section class="panel" aria-live="polite">
+    <div class="task" id="task" tabindex="-1"></div>
+    <p class="sr" id="sr-status" role="status"></p>
+  </section>
+
+  <script type="module" src="level2.js?v=13"></script>
+</body>
+</html>

@@ -1,8 +1,8 @@
 // Level 1: tokens and BPE, from the course opening to the final check.
 // Every number shown is computed live by the engine. Progress is saved on the device and rebuilt on
 // return by replaying the merges, which the engine reproduces exactly.
-import { createState, countPairs, rankPairs, step, totalTokens, encodeWord, encodeTextMarked, tokenizerFrom, vocabulary, UNKNOWN, END } from "../engine/bpe.js?v=12";
-import { loadGpt2, gpt2Tokens } from "../engine/gpt2.js?v=12";
+import { createState, countPairs, rankPairs, step, totalTokens, encodeWord, encodeTextMarked, tokenizerFrom, vocabulary, UNKNOWN, END } from "../engine/bpe.js?v=13";
+import { loadGpt2, gpt2Tokens } from "../engine/gpt2.js?v=13";
 
 const HAND_MERGES = 5;
 const TOTAL_MERGES = 55;
@@ -675,7 +675,7 @@ async function startTest() {
   save("test");
   if (!gpt2) {
     say(`<p>Loading GPT-2's tokenizer…</p>`);
-    gpt2 = loadGpt2(await (await fetch("../engine/data/gpt2_r50k_base.tiktoken?v=12")).text());
+    gpt2 = loadGpt2(await (await fetch("../engine/data/gpt2_r50k_base.tiktoken?v=13")).text());
   }
   say(`<p>Your tokenizer is ready. Try it on any text: type below, or tap an example. The same text also goes through GPT-2's real tokenizer, from 2019, which has 50,257 pieces.</p>
     <label class="try-label" for="try">Text to cut up</label>
@@ -814,8 +814,9 @@ function levelDone() {
       <li>A <strong>tokenizer</strong> is the ordered list of merges. The pieces it ends up with are its <strong>vocabulary</strong>.</li>
       <li>Real tokenizers like GPT-2's start from bytes, so they can read any text, even text they've never seen.</li>
     </ul>
-    <p class="small">Next comes level 2: every token gets a number, because a model works only with numbers. That level isn't built yet.</p>`,
-    [{ id: "again", text: "Start over", quiet: true, on: restart }]);
+    <p class="small">Next comes level 2: every token gets a number, because a model works only with numbers.</p>`,
+    [{ id: "level2", text: "Go to level 2", on: () => { location.href = "../level2/"; } },
+     { id: "again", text: "Start over", quiet: true, on: restart }]);
 }
 
 // ---------- live terrace ----------
@@ -909,7 +910,7 @@ village.addEventListener("click", onTileTap);
 village.addEventListener("keydown", (e) => {
   if ((e.key === "Enter" || e.key === " ") && e.target.closest(".t[role=button]")) { e.preventDefault(); onTileTap(e); }
 });
-text = await (await fetch("../../corpus/corpus_train.txt?v=12")).text();
+text = await (await fetch("../../corpus/corpus_train.txt?v=13")).text();
 lines = text.split("\n").filter((l) => l.trim()).map((l) => l.trim().split(/\s+/));
 setCounter(lines.length, "lines");
 {

@@ -10,14 +10,21 @@ def tok_word(w):
     return list(t)
 L = lambda f: [l.split() for l in open(f).read().splitlines() if l]
 train_s, held_s = L("corpus_train.txt"), L("corpus_heldout.txt")
-vocab = sorted(set(t for s in train_s for w in s for t in tok_word(w)))
-stoi = {t: i + 1 for i, t in enumerate(vocab)}  # 0 = start/pad
-V, CTX = len(stoi) + 1, 32
-enc = lambda s: [0] + [stoi[t] for w in s for t in tok_word(w)]
+# The game's numbering (level 2): starting symbols in sorted order, then one piece per merge in merge
+# order, then the line boundary as the last ID. A line is boundary, tokens, boundary; the model reads
+# the boundary and the tokens and predicts each next ID, ending with the boundary.
+base = sorted(set(ch for s in train_s for w in s for ch in w) | {"_"})
+id_list = base + ["".join(m) for m in merges[:K]] + ["<|line|>"]
+stoi = {t: i for i, t in enumerate(id_list)}
+B = stoi["<|line|>"]
+V, CTX = len(id_list), 32
+assert V == 81 and B == 80
+enc = lambda s: [B] + [stoi[t] for w in s for t in tok_word(w)]
 def batch(sents):
-    X = np.zeros((len(sents), CTX), dtype=np.int32); Y = np.full((len(sents), CTX), -1, dtype=np.int32)
+    X = np.full((len(sents), CTX), B, dtype=np.int32); Y = np.full((len(sents), CTX), -1, dtype=np.int32)  # padding: masked targets
     for i, s in enumerate(sents):
-        ids = enc(s)[:CTX + 1]
+        ids = enc(s) + [B]
+        assert len(ids) - 1 <= CTX, " ".join(s)
         X[i, :len(ids) - 1] = ids[:-1]; Y[i, :len(ids) - 1] = ids[1:]
     return jnp.array(X), jnp.array(Y)
 Xtr, Ytr = batch(train_s); Xhe, Yhe = batch(held_s)
@@ -70,7 +77,7 @@ NEW = [("in winter the families drink", "butter"), ("in summer the families drin
        ("at the festival tashi plays the", "flute"), ("the festival is in", "autumn"),
        ("the cow gives", "milk"), ("who cooks ?", "dawa")]
 newp = [(p.split(), {tok_word(a)[0]}) for p, a in NEW]
-itos = {i: t for t, i in stoi.items()}
+itos = dict(enumerate(id_list))
 
 def run(d, seed, steps=3000):
     p = init(jax.random.PRNGKey(seed), d); opt = optax.adamw(3e-3, weight_decay=0.01); st = opt.init(p)
