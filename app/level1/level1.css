@@ -30,6 +30,26 @@ body {
   overflow: hidden;
 }
 
+/* Course opening: full-screen pages before the village */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: var(--mist);
+  overflow-y: auto;
+  padding: calc(env(safe-area-inset-top) + 40px) var(--pad) calc(env(safe-area-inset-bottom) + 32px);
+}
+.intro[hidden] { display: none; }
+.intro-inner { max-width: 34rem; margin: 0 auto; }
+.intro h2 { font-size: 30px; line-height: 1.15; letter-spacing: -0.01em; margin: 0 0 18px; }
+.intro p { font-size: 18px; line-height: 1.55; margin: 0 0 16px; }
+.intro .actions { margin-top: 24px; }
+
+/* "Your turn" line: the one thing to do next, every step */
+.turn { color: var(--slate); }
+.turn strong { font-weight: 700; }
+.turn em { font-style: normal; font-weight: 700; border-bottom: 2px solid var(--look); }
+
 /* Header: where you are, and the one number that matters */
 .bar {
   display: flex;
@@ -112,6 +132,8 @@ body {
   border-top: 1px solid var(--edge);
   padding: 14px var(--pad) calc(env(safe-area-inset-bottom) + 10px);
   box-shadow: 0 -6px 18px rgba(29, 42, 48, 0.06);
+  max-height: 62dvh; /* the village always keeps at least a third of the screen */
+  overflow-y: auto;
 }
 .task p { margin: 0 0 10px; max-width: 60ch; }
 .task p.small { font-size: 15px; color: var(--muted); }
@@ -153,7 +175,8 @@ button:focus-visible, .pair:focus-visible { outline: 3px solid var(--look); outl
 .pair .pieces { font-family: var(--mono); font-weight: 700; white-space: pre; }
 .pair .pieces .end { color: var(--muted); font-weight: 400; }
 .pair .n { font-family: var(--mono); font-size: 14px; color: var(--muted); text-align: right; }
-.pair:disabled { opacity: 1; cursor: default; }
+.pair:disabled { opacity: 1; cursor: default; min-height: 0; padding: 5px 10px; row-gap: 3px; }
+.board.revealed { gap: 6px; }
 .pair[aria-pressed="true"] { border-color: var(--look); background: var(--look-soft); }
 .pair .bar-fill { grid-column: 1 / -1; height: 4px; border-radius: 2px; background: var(--edge); }
 .pair.best .bar-fill { background: var(--token); }
