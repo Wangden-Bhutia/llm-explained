@@ -1,0 +1,29 @@
+/* Self-hosted so the game works offline. Licence: OFL.txt in this folder. */
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("atkinson-hyperlegible-next-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url("atkinson-hyperlegible-next-latin-700-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible Mono";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("atkinson-hyperlegible-mono-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible Mono";
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url("atkinson-hyperlegible-mono-latin-700-normal.woff2") format("woff2");
+}
