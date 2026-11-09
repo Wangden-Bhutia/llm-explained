@@ -57,6 +57,31 @@ body {
 }
 .w { font-weight: 700; }
 
+/* Live terrace: one line retokenized after every merge, newest on top */
+.terrace { margin: 2px 0 12px; }
+.terrace p.small { margin-bottom: 8px; }
+.terrace-row {
+  display: grid;
+  grid-template-columns: 1.6em minmax(0, 1fr) 1.6em;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+}
+.terrace-row .tiles { display: flex; justify-content: center; gap: 4px; min-width: 0; }
+.terrace-row .word { gap: 1px; }
+.terrace-row .k, .terrace-row .n { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.terrace-row .k { text-align: left; }
+.terrace-row .n { text-align: right; }
+.terrace-row.old { opacity: 0.5; }
+.terrace-row:not(.old) .k, .terrace-row:not(.old) .n { color: var(--slate); font-weight: 700; }
+.t.mini {
+  font-size: 11px;
+  padding: 3px 1px 2px;
+  min-width: 1em;
+  border-bottom-width: 2px;
+  border-radius: 3px;
+}
+
 /* "Your turn" line: the one thing to do next, every step */
 .turn { color: var(--slate); }
 .turn strong { font-weight: 700; }

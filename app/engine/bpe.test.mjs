@@ -88,3 +88,13 @@ test("tokenizer is plain data: survives JSON round trip", () => {
   const copy = JSON.parse(JSON.stringify(tok));
   assert.deepEqual(encodeWord("raining", copy).tokens, ["ra", "in", "ing_"]);
 });
+
+test("live terrace: 'the rain is here .' after each of the first five merges", () => {
+  const counts = [];
+  for (let k = 0; k <= 5; k++) {
+    const tok = train(corpus, k);
+    counts.push("the rain is here .".split(" ").reduce((n, w) => n + encodeWord(w, tok).tokens.length, 0));
+  }
+  assert.deepEqual(counts, [19, 17, 16, 15, 14, 13]);
+  assert.equal("the rain is here .".split(" ").reduce((n, w) => n + encodeWord(w, train(corpus, 55)).tokens.length, 0), 8);
+});

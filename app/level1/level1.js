@@ -1,7 +1,7 @@
 // Level 1, steps 1–4, after the course opening: raw text, letter tiles, counting by hand,
 // the pair board, five merges. Every number shown is computed live by the engine.
 // Every step's text says what just happened, why it matters, and ends with a "Your turn" line.
-import { createState, countPairs, rankPairs, step, totalTokens, END } from "../engine/bpe.js?v=4";
+import { createState, countPairs, rankPairs, step, totalTokens, encodeWord, END } from "../engine/bpe.js?v=5";
 
 const HAND_MERGES = 5;
 const COUNT_LINES = [0, 1, 2]; // the three lines the player counts h + e in by hand
@@ -345,13 +345,14 @@ function afterMerge(m) {
   };
   const vocabNote = k === 1 ? `<p class="small">The new token joins the <strong>vocabulary</strong>, the list of every piece the model knows. It now has ${state.alphabet.length + k}.</p>` : "";
   const totalNote = `<p class="small">The village is now ${total} tokens.</p>`;
+  const climb = terrace();
   if (k < HAND_MERGES) {
-    say(notes[k] + vocabNote + totalNote +
+    say(notes[k] + climb + vocabNote + totalNote +
       turn(`${tap("Find the next pair")}. It's the same loop each time: count, find the most common pair, merge.`),
       [{ id: "next", text: "Find the next pair", on: () => openBoard(false) }]);
   } else {
     phase = "done";
-    say(notes[k] + totalNote + `<p class="small">Next, you'll run the remaining 50 merges. That part isn't built yet.</p>` +
+    say(notes[k] + climb + totalNote + `<p class="small">Next, you'll run the remaining 50 merges. That part isn't built yet.</p>` +
       turn(`${tap("Start over")} to play this part again.`),
       [{ id: "again", text: "Start over", quiet: true, on: restart }]);
   }
@@ -368,8 +369,32 @@ function restart() {
   introBuild();
 }
 
+// ---------- live terrace ----------
+// One village line, retokenized after every merge so far, newest on top. It uses the game's own
+// tiles and colours, so a tile means exactly what it means in the village above.
+const TERRACE_LINE = "the rain is here .";
+
+function terrace() {
+  const words = TERRACE_LINE.split(" ");
+  const rows = [];
+  for (let k = 0; k <= state.merges.length; k++) {
+    const tok = { alphabet: state.alphabet, merges: state.merges.slice(0, k).map((m) => [m.a, m.b]) };
+    const ws = words.map((w) => encodeWord(w, tok).tokens);
+    rows.push({ k, ws, n: ws.reduce((a, w) => a + w.length, 0) });
+  }
+  const html = rows.reverse().map((r, i) => {
+    const tiles = r.ws.map((w) => `<span class="word">${w.map((t) =>
+      `<span class="t mini${t.length > 1 ? " merged" : ""}">${label(t)}</span>`).join("")}</span>`).join("");
+    const when = String(r.k);
+    return `<div class="terrace-row${i ? " old" : ""}"><span class="k">${when}</span><span class="tiles">${tiles}</span><span class="n">${r.n}</span></div>`;
+  }).join("");
+  return `<div class="terrace" aria-label="The line ${TERRACE_LINE} after each merge so far, from ${rows[rows.length - 1].n} tokens down to ${rows[0].n}">
+    <p class="small">One village line, ${word(TERRACE_LINE)}, after every merge so far. Left: merges done. Right: tokens it takes.</p>
+    ${html}</div>`;
+}
+
 // ---------- start ----------
 village.addEventListener("click", onTileTap);
-text = await (await fetch("../../corpus/corpus_train.txt?v=4")).text();
+text = await (await fetch("../../corpus/corpus_train.txt?v=5")).text();
 lines = text.split("\n").filter((l) => l.trim()).map((l) => l.trim().split(/\s+/));
 restart();
