@@ -10,6 +10,8 @@ Every sentence is generated from fixed world laws in `gen_corpus.py`, so every s
 | `corpus_finetune.txt` | 32 short question–answer pairs for fine-tuning (Act V), each under 32 tokens. |
 | `corpus_tagged.json` | Training and held-out sentences tagged with the corpus rule each one serves. |
 | `check.py` | BPE run, vocabulary size, sentence token lengths and rule coverage. |
+| `export_reference.py` | Runs the reference BPE to completion and writes `bpe_reference.json`, which the JavaScript engine's tests check against. |
+| `bpe_reference.json` | Every merge with its count, tied pairs and token total; the level 1 test fixture. |
 | `capacity_test_jax.py` | Trains the course's transformer design at 4, 8, 16 and 32 numbers per token. Needs `jax` and `optax`. |
 | `capacity_results.txt` | Results from 9 Nov 2026: 16 numbers per token is the smallest size that learns the world and generalises. |
 
